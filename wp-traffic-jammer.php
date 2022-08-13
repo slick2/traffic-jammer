@@ -1,13 +1,19 @@
 <?php
-/*
- * Plugin Name:	Traffic Jammer
- * Plugin URI: https://github.com/slick2/wp-traffic-jammer
- * Description:	Blocking of malicious traffic that hog system resources
- * Version:		0.0.2
- * Author:			Carey Dayrit
- * Author URI:		http://careydayrit.com
- * */
-
+/**
+ * Plugin Name:	        Wordpress Traffic Jammer
+ * Plugin URI:          https://github.com/slick2/wp-traffic-jammer
+ * Description:	        WordPress plugin to block IP and bots that causes malicious traffic
+ * Version:		        0.2
+ * Requires at least:   5.2
+ * Requires PHP:        7.4
+ * Author:			    Carey Dayrit
+ * Author URI:		    http://careydayrit.com
+ * License:             GPL v2 or later
+ * License URI:         https://www.gnu.org/licenses/gpl-2.0.html
+ * Update URI:          https://example.com/my-plugin/
+ * Text Domain:         wp-traffic-jammer
+ */
+ 
 
 // limit IP
 

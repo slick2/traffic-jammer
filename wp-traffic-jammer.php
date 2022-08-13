@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:	Traffic Jammer
- * Plugin URI: https://github.com/careydayrit/wp-traffic-jammer
+ * Plugin URI: https://github.com/slick2/wp-traffic-jammer
  * Description:	Blocking of malicious traffic that hog system resources
  * Version:		0.0.2
  * Author:			Carey Dayrit

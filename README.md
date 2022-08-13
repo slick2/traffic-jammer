@@ -24,10 +24,3 @@ WordPress plugin to block IP and bots that causes malicious traffic
 1. Download the plugin via the github release page
 1. Upload the compress archive through the 'Plugins > Add New > Upload' screen in your WordPress dashbboard
 1. Activate the plugin through the 'Plugins' menu in WordPress 
-
-
-## Changelog 
-### 0.2 
-2022-08-13
-
-Initial release

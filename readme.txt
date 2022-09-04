@@ -24,6 +24,11 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 == Changelog ==
 
+= 0.3 =
+= 2022-09-05
+= added feature to block user agent
+= adhere to WordPress coding standards
+
 = 0.2 =
 * 2022-08-13
 * Initial release

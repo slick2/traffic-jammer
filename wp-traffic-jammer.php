@@ -9,7 +9,7 @@
  * Plugin URI:          https://github.com/slick2/plugins/wp-traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes
  *                      malicious traffic
- * Version:             0.3
+ * Version:             0.4
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit

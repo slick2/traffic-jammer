@@ -191,7 +191,7 @@ function wp_traffic_jammer_ip() {
 function wp_traffic_jammer_user_agent() {
 	$options    = get_option( 'wp_traffic_jammer_options' );
 	$user_agent = isset( $options['user_agent'] ) ? $options['user_agent'] : '';
-	echo "<textarea rows='12' name='wp_traffic_jammer_options[user_agent]' class='regular-text'>" . $user_agent . '</textarea>';
+	echo "<textarea rows='12' name='wp_traffic_jammer_options[user_agent]' class='regular-text'>" . esc_html( $user_agent ) . '</textarea>';
 	echo '<br/>';
 	echo '<small>Separated by comma (,)';
 }

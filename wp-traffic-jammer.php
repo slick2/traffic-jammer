@@ -31,12 +31,33 @@ $wptj_server = array_map( 'stripslashes', $_SERVER );
 function wp_traffic_jammer_limit_ip() {
 	global $wptj_server;
 	$options = get_option( 'wp_traffic_jammer_options' );
-	$ips     = array_map( 'trim', explode( ',', $options['ip_list'] ) );
-	$ip      = $wptj_server['REMOTE_ADDR'];
 
-	if ( in_array( $ip, $ips ) ) {
+	if ( ! isset( $options['ip_list'] ) ) {
+		return;
+	}
+	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
+	$ip  = $wptj_server['REMOTE_ADDR'];
+
+	/**  Check if this IP is in blocklist. */
+	if ( ! $ip_forbidden = in_array( $ip, $ips ) ) {
+		/**  Check if this IP is in CIDR block list. */
+		foreach ( $ips as $_cidr ) {
+			if ( strpos( $_cidr, '/' ) !== false ) {
+				$_ip      = ip2long( $ip );
+				list ( $_net, $_mask ) = explode( '/', $_cidr, 2 );
+				$_ip_net  = ip2long( $_net );
+				$_ip_mask = ~( ( 1 << ( 32 - $_mask ) ) - 1 );
+
+				if ( $ip_forbidden = ( $_ip & $_ip_mask ) == ( $_ip_net & $_ip_mask )) {
+					break;
+				}
+			}
+		}
+	}
+
+	if ( $ip_forbidden ) {
 		header( 'HTTP/1.0 403 Forbidden' );
-		exit();
+		exit;
 	}
 }
 add_action( 'init', 'wp_traffic_jammer_limit_ip' );
@@ -48,7 +69,12 @@ add_action( 'init', 'wp_traffic_jammer_limit_ip' );
  */
 function wp_traffic_jammer_limit_user_agent() {
 	global $wptj_server;
-	$options     = get_option( 'wp_traffic_jammer_options' );
+	$options = get_option( 'wp_traffic_jammer_options' );
+
+	if ( ! isset( $options['user_agents'] ) ) {
+		return;
+	}
+
 	$user_agents = explode( ',', $options['user_agents']);
 
 	// TODO : This will hit hard on longer list.
@@ -116,7 +142,7 @@ function wp_traffic_jammer_admin_init() {
 
 	add_settings_field(
 		'wp_traffic_jammer_ip',          // id.
-		__( 'IP blocklist' ),                 // title.
+		__( 'IP blocklist' ),            // title.
 		'wp_traffic_jammer_ip',          // callback display.
 		'wp_traffic_jammer',             // page.
 		'wp_traffic_jammer_ip_section'   // section.

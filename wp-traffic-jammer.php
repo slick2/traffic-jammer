@@ -21,7 +21,7 @@
  */
 
 /** Sanitize server variables */
-$server = array_map( 'wp_unslash', $_SERVER );
+$wptj_server = array_map( 'stripslashes', $_SERVER );
 
 /**
  * Limit IP
@@ -29,10 +29,10 @@ $server = array_map( 'wp_unslash', $_SERVER );
  * @return void
  */
 function wp_traffic_jammer_limit_ip() {
-	global $remote_ip;
+	global $wptj_server;
 	$options = get_option( 'wp_traffic_jammer_options' );
 	$ips     = array_map( 'trim', explode( ',', $options['ip_list'] ) );
-	$ip      = $server['REMOTE_ADDR'];
+	$ip      = $wptj_server['REMOTE_ADDR'];
 
 	if ( in_array( $ip, $ips ) ) {
 		header( 'HTTP/1.0 403 Forbidden' );
@@ -40,18 +40,20 @@ function wp_traffic_jammer_limit_ip() {
 	}
 }
 add_action( 'init', 'wp_traffic_jammer_limit_ip' );
+
 /**
  * Limit User Agents
  *
  * @return void
  */
 function wp_traffic_jammer_limit_user_agent() {
+	global $wptj_server;
 	$options     = get_option( 'wp_traffic_jammer_options' );
 	$user_agents = explode( ',', $options['user_agents']);
 
 	// TODO : This will hit hard on longer list.
 	foreach ( $user_agents as $bot ) {
-		if ( stripos( $server['HTTP_USER_AGENT'], $bot ) !== false ) {
+		if ( stripos( $wptj_server['HTTP_USER_AGENT'], $bot ) !== false ) {
 			header( 'HTTP/1.0 403 Forbidden' );
 			exit();
 		}
@@ -114,7 +116,7 @@ function wp_traffic_jammer_admin_init() {
 
 	add_settings_field(
 		'wp_traffic_jammer_ip',          // id.
-		__( 'IP list' ),                 // title.
+		__( 'IP blocklist' ),                 // title.
 		'wp_traffic_jammer_ip',          // callback display.
 		'wp_traffic_jammer',             // page.
 		'wp_traffic_jammer_ip_section'   // section.
@@ -130,7 +132,7 @@ function wp_traffic_jammer_admin_init() {
 
 	add_settings_field(
 		'wp_traffic_jammer_user_agent',          // id.
-		__( 'User Agent list' ),                 // title.
+		__( 'User Agent blocklist' ),                 // title.
 		'wp_traffic_jammer_user_agent',          // callback display.
 		'wp_traffic_jammer',                     // page.
 		'wp_traffic_jammer_user_agent_section'   // section.
@@ -149,10 +151,10 @@ add_action( 'admin_init', 'wp_traffic_jammer_admin_init' );
  */
 function wp_traffic_jammer_ip() {
 	$options = get_option( 'wp_traffic_jammer_options' );
-	$ip_list = $options['ip_list'];
-	echo "<textarea rows='12' name='traffic_jammer_options[ip_list]' class='regular-text'>" . esc_html( $ip_list ) . '</textarea>';
+	$ip_list = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
+	echo "<textarea rows='12' name='wp_traffic_jammer_options[ip_list]' class='regular-text'>" . esc_html( $ip_list ) . '</textarea>';
 	echo '<br/>';
-	echo '<small>Seperate by comma (,)';
+	echo '<small>Separated by comma (,)';
 }
 
 /**
@@ -162,8 +164,8 @@ function wp_traffic_jammer_ip() {
  */
 function wp_traffic_jammer_user_agent() {
 	$options    = get_option( 'wp_traffic_jammer_options' );
-	$user_agent = $options['user_agent'];
-	echo "<textarea rows='12' name='traffic_jammer_options[user_agent]' class='regular-text'>" . $user_agent . '</textarea>';
+	$user_agent = isset( $options['user_agent'] ) ? $options['user_agent'] : '';
+	echo "<textarea rows='12' name='wp_traffic_jammer_options[user_agent]' class='regular-text'>" . $user_agent . '</textarea>';
 	echo '<br/>';
-	echo '<small>Seperate by comma (,)';
+	echo '<small>Separated by comma (,)';
 }

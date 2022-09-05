@@ -24,6 +24,11 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 == Changelog ==
 
+= 0.4 =
+= 2022-09-06
+= fix PHP warning when DEBUG is set to true
+= added ip range blocking using cidr
+
 = 0.3 =
 = 2022-09-05
 = added feature to block user agent

@@ -21,7 +21,7 @@
  */
 
 /** Sanitize server variables */
-$wptj_server = array_map( 'stripslashes', $_SERVER );
+@$wptj_server = array_map( 'stripslashes', $_SERVER );
 
 /**
  * Limit IP
@@ -195,3 +195,62 @@ function wp_traffic_jammer_user_agent() {
 	echo '<br/>';
 	echo '<small>Separated by comma (,)';
 }
+
+/**
+ * Add IP
+ *
+ * @param string $ip value ot add.
+ *
+ * @return void
+ */
+function wp_traffic_jammer_add_ip( $ip ) {
+	$options    = get_option( 'wp_traffic_jammer_options' );
+	$ip_list    = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
+	$user_agent = $options['user_agent'];
+
+	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
+	array_push( $ips, $ip );
+	$ip_list = implode( ",\n", $ips );
+	// reconstruct the array option.
+	$options = array(
+		'ip_list'    => $ip_list,
+		'user_agent' => $user_agent,
+	);
+
+	update_option( 'wp_traffic_jammer_options', $options );
+}
+
+/**
+ * Add IP
+ *
+ * @param string $ip value ot add.
+ *
+ * @return void
+ */
+function wp_traffic_jammer_remove_ip( $ip ) {
+	$options = get_option( 'wp_traffic_jammer_options' );
+	if ( $options['ip_list'] == '' ) {
+		return;
+	}
+
+	$ip_list    = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
+	$user_agent = $options['user_agent'];
+
+	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
+	$len = count( $ips );
+	$idx = array_search( $ip, $ips );
+	array_splice( $ips, $idx, 1 );
+
+	$ip_list = implode( ",\n", $ips );
+	// reconstruct the array option.
+	$options = array(
+		'ip_list'    => $ip_list,
+		'user_agent' => $user_agent,
+	);
+
+	update_option( 'wp_traffic_jammer_options', $options );
+
+}
+
+// include wp-cli file.
+require plugin_dir_path( __FILE__ ) . 'wp-traffic-jammer-cli.php';

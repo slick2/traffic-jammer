@@ -3,8 +3,8 @@ Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
-Tested up to: 5.4
-Stable tag: 0.4
+Tested up to: 6.0.2
+Stable tag: 0.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,13 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 
 == Changelog ==
+
+= 0.5 =
+= 2022-09-19
+= add jam wp-cli command
+= add block IP using wp-cli
+= unblock IP using wp-cli
+
 
 = 0.4 =
 = 2022-09-06

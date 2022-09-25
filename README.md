@@ -7,7 +7,7 @@ Requires at least: 4.7
 
 Tested up to: 6.0.2
 
-Stable tag: 0.5
+Stable tag: 0.6
 
 Requires PHP: 7.4
 

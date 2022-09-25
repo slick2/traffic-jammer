@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
 Tested up to: 6.0.2
-Stable tag: 0.5
+Stable tag: 0.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,11 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 
 == Changelog ==
+= 0.6 =
+= 2022-09-26 =
+= activation hook, load known bad bots
+= bug fix blocking of user agents
+= refactor code on checking of IP
 
 = 0.5 =
 = 2022-09-19

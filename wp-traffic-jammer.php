@@ -223,7 +223,7 @@ function wp_traffic_jammer_ip() {
  * @return void
  */
 function wp_traffic_jammer_user_agents() {
-	$options    = get_option( 'wp_traffic_jammer_options' );
+	$options     = get_option( 'wp_traffic_jammer_options' );
 	$user_agents = isset( $options['user_agents'] ) ? $options['user_agents'] : '';
 	echo "<textarea rows='12' name='wp_traffic_jammer_options[user_agents]' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
 	echo '<br/>';
@@ -297,7 +297,6 @@ function wp_traffic_jammer_remove_ip( $ip ) {
 	update_option( 'wp_traffic_jammer_options', $options );
 
 }
-
 
 /**
  * Check IP

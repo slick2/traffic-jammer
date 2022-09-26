@@ -8,8 +8,8 @@
  * Plugin Name:         WP Traffic Jammer
  * Plugin URI:          https://github.com/slick2/wp-traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes
- *                      malicious traffic
- * Version:             0.6
+ *                      malicious traffic.  The poormans WAF.
+ * Version:             0.7
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -30,23 +30,42 @@ $wptj_server = array_map( 'sanitize_server_var', $_SERVER );
  */
 function wp_traffic_jammer_activate() {
 	// define the bad bots.
-	$bad_bots = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
+	$bad_bots  = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
+	$options   = '';
+	$blocklist = '';
+	$whitelist = '';
 	// Get the options.
-	$options = get_option( 'wp_traffic_jammer_options' );
-	if ( is_array( $options ) ) {
-		return;
-	} else {
-		$options = array(
-			'user_agents' => $bad_bots,
-			'ip_list'     => '',
-			'settings'    => '',
-		);
-		add_option( 'wp_traffic_jammer_options', $options );
-		return;
+	if ( get_option( 'wp_traffic_jammer_options' ) === false ) {
+		add_option( 'wp_traffic_jammer_options' );
 	}
+
+	if ( get_option( ' wp_traffic_jammer_blocklist' ) === false ) {
+		add_option( 'wp_traffic_jammer_blocklist', $blocklist, '', 'no' );
+	}
+
+	if ( get_option( ' wp_traffic_jammer_whitelist' ) === false ) {
+		add_option( 'wp_traffic_jammer_whitelist', $whitelist, '', 'no' );
+	}
+
+	if ( get_option( ' wp_traffic_jammer_user_agents' ) === false ) {
+		add_option( 'wp_traffic_jammer_user_agents', $bad_bots, '', 'no' );
+	}
+
 }
 register_activation_hook( __FILE__, 'wp_traffic_jammer_activate' );
 
+/**
+ * Deactivate plugin
+ *
+ * @return void
+ */
+function wp_traffic_jammer_deactivate() {
+	delete_option( 'wp_traffic_jammer_options' );
+	delete_option( 'wp_traffic_jammer_blocklist' );
+	delete_option( 'wp_traffic_jammer_whitelist' );
+	delete_option( 'wp_traffic_jammer_user_agents' );
+}
+// register_deactivation_hook( __FILE__, 'wp_traffic_jammer_deactivate' ); uncomment later.
 /**
  * Limit IP
  *
@@ -54,16 +73,17 @@ register_activation_hook( __FILE__, 'wp_traffic_jammer_activate' );
  */
 function wp_traffic_jammer_limit_ip() {
 	global $wptj_server;
-	$options = get_option( 'wp_traffic_jammer_options' );
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 
-	if ( ! isset( $options['ip_list'] ) ) {
+	if ( ! isset( $options['blocklist'] ) ) {
 		return;
 	}
-	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
-	$ip  = $wptj_server['REMOTE_ADDR'];
+
+	$ip        = $wptj_server['REMOTE_ADDR'];
+	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
 	/**  Check if this IP is in blocklist. */
-	$ip_forbidden = wp_traffic_jammer_check_ip( $ip, $ips );
+	$ip_forbidden = wp_traffic_jammer_check_ip( $ip, $blocklist );
 
 	if ( $ip_forbidden ) {
 		header( 'HTTP/1.0 403 Forbidden' );
@@ -77,18 +97,17 @@ add_action( 'init', 'wp_traffic_jammer_limit_ip' );
  */
 function wp_traffic_jammer_whitelist_ip() {
 	global $wptj_server;
+	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 
-	$ip_whitelist = array(
-		'192.0.2.38',
-		'192.0.3.125',
-		'192.0.67.0/30',
-		'192.0.78.0/24',
-		'192.168.0.2',
-	);
+	if ( empty( $whitelist ) ) {
+		return;
+	}
+
+	$whitelist = array_map( 'trim', explode( ',', $whitelist ) );
 
 	$ip = $wptj_server['REMOTE_ADDR'];
-	// Check if this IP is in blocklist.
-	$ip_allow = wp_traffic_jammer_check_ip( $ip, $ip_whitelist );
+	// Check if this IP is in whitelistlist.
+	$ip_allow = wp_traffic_jammer_check_ip( $ip, $whitelist );
 
 	if ( preg_match( '/(wp-login.php)/', $wptj_server['REQUEST_URI'] ) ) {
 		if ( ! $ip_allow ) {
@@ -97,20 +116,21 @@ function wp_traffic_jammer_whitelist_ip() {
 		}
 	}
 }
+add_action( 'init', 'wp_traffic_jammer_whitelist_ip' );
 /**
  * Limit User Agents
  *
  * @return void
  */
-function wp_traffic_jammer_limit_user_agent() {
+function wp_traffic_jammer_limit_user_agents() {
 	global $wptj_server;
-	$options = get_option( 'wp_traffic_jammer_options' );
+	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
 
-	if ( ! isset( $options['user_agents'] ) ) {
+	if ( ! isset( $user_agents ) ) {
 		return;
 	}
 
-	$user_agents = explode( ',', $options['user_agents']);
+	$user_agents = explode( ',', $user_agents );
 
 	// TODO : This will hit hard on longer list.
 	foreach ( $user_agents as $bot ) {
@@ -120,7 +140,7 @@ function wp_traffic_jammer_limit_user_agent() {
 		}
 	}
 }
-add_action( 'init', 'wp_traffic_jammer_limit_user_agent' );
+add_action( 'init', 'wp_traffic_jammer_limit_user_agents' );
 
 /**
  *
@@ -147,7 +167,8 @@ add_action( 'admin_menu', 'wp_traffic_jammer_add_page' );
 function wp_traffic_jammer_options_page() {
 	?>
 	<div class="wrap">
-		<h2>Traffic Jammer</h2>
+		<h1>Traffic Jammer</h1>
+		<p><?php esc_html_e( 'Traffic Jammer offers ability to block IP and crawlers that hog system resources.' ); ?></p>
 		<form action="options.php" method="post" class="form-table">
 			<?php settings_fields( 'wp_traffic_jammer' ); ?>
 			<?php do_settings_sections( 'wp_traffic_jammer' ); ?>
@@ -167,7 +188,7 @@ function wp_traffic_jammer_options_page() {
 function wp_traffic_jammer_admin_init() {
 
 	add_settings_section(
-		'wp_traffic_jammer_ip_section',   // id.
+		'wp_traffic_jammer_blocklist_section',   // id.
 		__( 'Block IP' ),                 // title.
 		/** 'traffic_jammer_settings_ip', //callback */
 		null,
@@ -175,11 +196,11 @@ function wp_traffic_jammer_admin_init() {
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_ip',          // id.
+		'wp_traffic_jammer_blocklist',          // id.
 		__( 'IP blocklist' ),            // title.
-		'wp_traffic_jammer_ip',          // callback display.
+		'wp_traffic_jammer_blocklist',          // callback display.
 		'wp_traffic_jammer',             // page.
-		'wp_traffic_jammer_ip_section'   // section.
+		'wp_traffic_jammer_blocklist_section'   // section.
 	);
 
 	add_settings_section(
@@ -198,34 +219,70 @@ function wp_traffic_jammer_admin_init() {
 		'wp_traffic_jammer_user_agent_section'   // section.
 	);
 
+	add_settings_section(
+		'wp_traffic_jammer_whitelist_section',   // id.
+		__( 'Allow IP' ),                 // title.
+		/** 'traffic_jammer_settings_ip', //callback */
+		null,
+		'wp_traffic_jammer'               // page.
+	);
+
+	add_settings_field(
+		'wp_traffic_jammer_whitelist',          // id.
+		__( 'Limit access to wp-login.php' ),            // title.
+		'wp_traffic_jammer_whitelist',          // callback display.
+		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_whitelist_section'   // section.
+	);
+
 	register_setting(
 		'wp_traffic_jammer',                    // option group.
-		'wp_traffic_jammer_options',            // option name.
-		/** 'traffic_jammer_block_ip_text'   // callback */
+		'wp_traffic_jammer_blocklist',            // option name.
 	);
+
+	register_setting(
+		'wp_traffic_jammer',                    // option group.
+		'wp_traffic_jammer_user_agents',            // option name.
+	);
+
+	register_setting(
+		'wp_traffic_jammer',                    // option group.
+		'wp_traffic_jammer_whitelist',            // option name.
+	);
+
 }
 add_action( 'admin_init', 'wp_traffic_jammer_admin_init' );
 
 /**
- * Field
+ * Blocklist Field
  */
-function wp_traffic_jammer_ip() {
-	$options = get_option( 'wp_traffic_jammer_options' );
-	$ip_list = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
-	echo "<textarea rows='12' name='wp_traffic_jammer_options[ip_list]' class='regular-text'>" . esc_html( $ip_list ) . '</textarea>';
+function wp_traffic_jammer_blocklist() {
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+	echo "<textarea rows='12' name='wp_traffic_jammer_blocklist' class='regular-text'>" . esc_html( $blocklist ) . '</textarea>';
 	echo '<br/>';
 	echo '<small>Separated by comma (,)';
 }
 
 /**
- * User Agent Text Area
+ * User Agent Field
  *
  * @return void
  */
 function wp_traffic_jammer_user_agents() {
-	$options     = get_option( 'wp_traffic_jammer_options' );
-	$user_agents = isset( $options['user_agents'] ) ? $options['user_agents'] : '';
-	echo "<textarea rows='12' name='wp_traffic_jammer_options[user_agents]' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
+	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
+	echo "<textarea rows='12' name='wp_traffic_jammer_user_agents' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
+	echo '<br/>';
+	echo '<small>Separated by comma (,)';
+}
+
+/**
+ * Whitelist Field
+ *
+ * @return void
+ */
+function wp_traffic_jammer_whitelist() {
+	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
+	echo "<textarea rows='12' name='wp_traffic_jammer_whitelist' class='regular-text'>" . esc_html( $whitelist ) . '</textarea>';
 	echo '<br/>';
 	echo '<small>Separated by comma (,)';
 }
@@ -243,59 +300,95 @@ function sanitize_server_var( $server ) {
 }
 
 /**
- * Add IP
+ * Block IP
  *
  * @param string $ip value ot add.
  *
  * @return void
  */
-function wp_traffic_jammer_add_ip( $ip ) {
-	$options     = get_option( 'wp_traffic_jammer_options' );
-	$ip_list     = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
-	$user_agents = $options['user_agents'];
-
-	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
+function wp_traffic_jammer_block_ip( $ip ) {
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+	if ( ! empty( $blocklist )) {
+		$ips = array_map( 'trim', explode( ',', $blocklist ) );
+	} else {
+		$ips = array();
+	}
+	// convert to array to traverse.
 	array_push( $ips, $ip );
-	$ip_list = implode( ",\n", $ips );
-	// reconstruct the array option.
-	$options = array(
-		'ip_list'     => $ip_list,
-		'user_agents' => $user_agents,
-	);
-
-	update_option( 'wp_traffic_jammer_options', $options );
+	if ( count( $ips ) > 1 ) {
+		$blocklist = implode( ",\n", $ips );
+	} else {
+		$blocklist = $ip;
+	}
+	update_option( 'wp_traffic_jammer_blocklist', $blocklist );
 }
 
 /**
- * Remove IP
+ * Unblock IP
  *
  * @param string $ip value to remove.
  *
  * @return void
  */
-function wp_traffic_jammer_remove_ip( $ip ) {
-	$options = get_option( 'wp_traffic_jammer_options' );
-	if ( $options['ip_list'] == '' ) {
-		return;
-	}
-
-	$ip_list     = isset( $options['ip_list'] ) ? $options['ip_list'] : '';
-	$user_agents = $options['user_agents'];
-
-	$ips = array_map( 'trim', explode( ',', $options['ip_list'] ) );
+function wp_traffic_jammer_unblock_ip( $ip ) {
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+	// convert to array.
+	$ips = array_map( 'trim', explode( ',', $blocklist ) );
 	$len = count( $ips );
 	$idx = array_search( $ip, $ips );
 	array_splice( $ips, $idx, 1 );
+	$blocklist = implode( ",\n", $ips );
+	update_option( 'wp_traffic_jammer_blocklist', $blocklist );
+}
 
-	$ip_list = implode( ",\n", $ips );
-	// reconstruct the array option.
-	$options = array(
-		'ip_list'     => $ip_list,
-		'user_agents' => $user_agents,
-	);
+/**
+ * Trust IP
+ *
+ * @param string $ip value ot add.
+ *
+ * @return void
+ */
+function wp_traffic_jammer_trust_ip( $ip ) {
+	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
+	if ( ! empty( $whitelist )) {
+		$ips = array_map( 'trim', explode( ',', $whitelist ) );
+	} else {
+		$ips = array();
+	}
+	// convert to array to traverse.
+	array_push( $ips, $ip );
+	if ( count( $ips ) > 1 ) {
+		$whitelist = implode( ",\n", $ips );
+	} else {
+		$whitelist = $ip;
+	}
+	update_option( 'wp_traffic_jammer_whitelist', $whitelist );
+}
 
-	update_option( 'wp_traffic_jammer_options', $options );
-
+/**
+ * Untrust IP
+ *
+ * @param string $ip value to remove.
+ *
+ * @return void
+ */
+function wp_traffic_jammer_untrust_ip( $ip ) {
+	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
+	// convert to array.
+	$ips = array_map( 'trim', explode( ',', $whitelist ) );
+	$len = count( $ips );
+	$idx = array_search( $ip, $ips );
+	array_splice( $ips, $idx, 1 );
+	$whitelist = implode( ",\n", $ips );
+	update_option( 'wp_traffic_jammer_whitelist', $whitelist );
+}
+/**
+ * Trust all access to wp-login.php
+ *
+ * @return void
+ */
+function wp_traffic_jammer_trust_all() {
+	update_option( 'wp_traffic_jammer_whitelist', '' );
 }
 
 /**
@@ -328,8 +421,7 @@ function wp_traffic_jammer_check_ip( $ip, $ip_haystack ) {
 	}
 
 	return $ip_found;
-
 }
 
 // include wp-cli file.
-require plugin_dir_path( __FILE__ ) . 'wp-traffic-jammer-cli.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-wp-traffic-jammer-cli.php';

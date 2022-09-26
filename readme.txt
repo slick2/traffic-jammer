@@ -1,4 +1,4 @@
-=== Wordpress Traffic Jammer ===
+=== Traffic Jammer ===
 Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
@@ -23,6 +23,10 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 
 == Changelog ==
+= 0.8 =
+= 2022-09-28 =
+= renamed the plugin name to comply with WordPress.org 
+
 = 0.7 =
 = 2022-09-27 =
 = all options used are not set to autoload

@@ -1,23 +1,22 @@
 <?php
 /**
- * WP Traffic Jammer
+ * Traffic Jammer
  *
- * @package  WPTrafficJammer
+ * @package  TrafficJammer
  *
  * @wordpress-plguin
- * Plugin Name:         WP Traffic Jammer
- * Plugin URI:          https://github.com/slick2/wp-traffic-jammer
+ * Plugin Name:        Traffic Jammer
+ * Plugin URI:          https://github.com/slick2/traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes
  *                      malicious traffic.  The poormans WAF.
- * Version:             0.7
+ * Version:             0.8
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
  * Author URI:          http://careydayrit.com
  * License:             GPL v2 or later
  * License URI:         https://www.gnu.org/licenses/gpl-2.0.html
- * Update URI:          https://careydayrit.com/plugins/wp-traffic-jammer
- * Text Domain:         wp-traffic-jammer
+ * Text Domain:         traffic-jammer
  */
 
 /** Sanitize server variables */

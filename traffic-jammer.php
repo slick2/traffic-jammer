@@ -153,7 +153,8 @@ function wp_traffic_jammer_add_page() {
 		'Traffic Jammer', // menu title.
 		'manage_options', // capability.
 		'wp_traffic_jammer', // menu slug.
-		'wp_traffic_jammer_options_page' // callback.
+		'wp_traffic_jammer_options_page', // callback.
+		'dashicons-privacy',
 	);
 }
 add_action( 'admin_menu', 'wp_traffic_jammer_add_page' );
@@ -164,19 +165,7 @@ add_action( 'admin_menu', 'wp_traffic_jammer_add_page' );
  * @return void
  */
 function wp_traffic_jammer_options_page() {
-	?>
-	<div class="wrap">
-		<h1>Traffic Jammer</h1>
-		<p><?php esc_html_e( 'Traffic Jammer offers ability to block IP and crawlers that hog system resources.' ); ?></p>
-		<form action="options.php" method="post" class="form-table">
-			<?php settings_fields( 'wp_traffic_jammer' ); ?>
-			<?php do_settings_sections( 'wp_traffic_jammer' ); ?>
-			<p class="submit">                    
-				<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
-			</p>
-		</form>
-	</div>
-	<?php
+	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
 }
 
 /**
@@ -191,14 +180,14 @@ function wp_traffic_jammer_admin_init() {
 		__( 'Block IP' ),                 // title.
 		/** 'traffic_jammer_settings_ip', //callback */
 		null,
-		'wp_traffic_jammer'               // page.
+		'wp_traffic_jammer_blocklist'               // page.
 	);
 
 	add_settings_field(
 		'wp_traffic_jammer_blocklist',          // id.
 		__( 'IP blocklist' ),            // title.
 		'wp_traffic_jammer_blocklist',          // callback display.
-		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_blocklist',             // page.
 		'wp_traffic_jammer_blocklist_section'   // section.
 	);
 

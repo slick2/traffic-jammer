@@ -21,7 +21,7 @@
 
 /** Sanitize server variables */
 $wptj_server = array_map( 'sanitize_server_var', $_SERVER );
-
+wp_enqueue_script( 'jquery-ui-tabs' );
 /**
  * Activate plugin
  *
@@ -196,14 +196,14 @@ function wp_traffic_jammer_admin_init() {
 		__( 'Block User Agent' ),                 // title.
 		/** 'traffic_jammer_settings_user_agent', // callback */
 		null,
-		'wp_traffic_jammer'                       // page.
+		'wp_traffic_jammer_user_agents'                       // page.
 	);
 
 	add_settings_field(
 		'wp_traffic_jammer_user_agents',          // id.
 		__( 'User Agent blocklist' ),                 // title.
 		'wp_traffic_jammer_user_agents',          // callback display.
-		'wp_traffic_jammer',                     // page.
+		'wp_traffic_jammer_user_agents',                     // page.
 		'wp_traffic_jammer_user_agent_section'   // section.
 	);
 
@@ -212,29 +212,29 @@ function wp_traffic_jammer_admin_init() {
 		__( 'Allow IP' ),                 // title.
 		/** 'traffic_jammer_settings_ip', //callback */
 		null,
-		'wp_traffic_jammer'               // page.
+		'wp_traffic_jammer_whitelist'               // page.
 	);
 
 	add_settings_field(
 		'wp_traffic_jammer_whitelist',          // id.
 		__( 'Limit access to wp-login.php' ),            // title.
 		'wp_traffic_jammer_whitelist',          // callback display.
-		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_whitelist',             // page.
 		'wp_traffic_jammer_whitelist_section'   // section.
 	);
 
 	register_setting(
-		'wp_traffic_jammer',                    // option group.
+		'wp_traffic_jammer_blocklist',                    // option group.
 		'wp_traffic_jammer_blocklist',            // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer',                    // option group.
+		'wp_traffic_jammer_user_agents',              // option group.
 		'wp_traffic_jammer_user_agents',            // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer',                    // option group.
+		'wp_traffic_jammer_whitelist',                    // option group.
 		'wp_traffic_jammer_whitelist',            // option name.
 	);
 

@@ -9,7 +9,7 @@
  * Plugin URI:          https://github.com/slick2/traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes
  *                      malicious traffic.  The poormans WAF.
- * Version:             0.8
+ * Version:             0.9
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -21,7 +21,9 @@
 
 /** Sanitize server variables */
 $wptj_server = array_map( 'sanitize_server_var', $_SERVER );
+
 wp_enqueue_script( 'jquery-ui-tabs' );
+
 /**
  * Activate plugin
  *
@@ -176,66 +178,63 @@ function wp_traffic_jammer_options_page() {
 function wp_traffic_jammer_admin_init() {
 
 	add_settings_section(
-		'wp_traffic_jammer_blocklist_section',   // id.
-		__( 'Block IP' ),                 // title.
-		/** 'traffic_jammer_settings_ip', //callback */
-		null,
-		'wp_traffic_jammer_blocklist'               // page.
+		'wp_traffic_jammer_blocklist_section', // id.
+		'', // title.
+		null, // callback.
+		'wp_traffic_jammer' // page.
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_blocklist',          // id.
-		__( 'IP blocklist' ),            // title.
-		'wp_traffic_jammer_blocklist',          // callback display.
-		'wp_traffic_jammer_blocklist',             // page.
-		'wp_traffic_jammer_blocklist_section'   // section.
+		'wp_traffic_jammer_blocklist', // id.
+		__( 'Block IP' ),  // title.
+		'wp_traffic_jammer_blocklist', // callback display.
+		'wp_traffic_jammer', // page.
+		'wp_traffic_jammer_blocklist_section' // section.
 	);
 
 	add_settings_section(
-		'wp_traffic_jammer_user_agent_section',   // id.
-		__( 'Block User Agent' ),                 // title.
-		/** 'traffic_jammer_settings_user_agent', // callback */
-		null,
-		'wp_traffic_jammer_user_agents'                       // page.
+		'wp_traffic_jammer_user_agent_section', // id.
+		__( 'Block User Agent' ), // title.
+		null, // callback.
+		'wp_traffic_jammer', // page.
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_user_agents',          // id.
-		__( 'User Agent blocklist' ),                 // title.
-		'wp_traffic_jammer_user_agents',          // callback display.
-		'wp_traffic_jammer_user_agents',                     // page.
-		'wp_traffic_jammer_user_agent_section'   // section.
+		'wp_traffic_jammer_user_agents', // id.
+		__( 'User Agent Blocklist' ),    // title.
+		'wp_traffic_jammer_user_agents', // callback display.
+		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_user_agent_section', // section.
 	);
 
 	add_settings_section(
-		'wp_traffic_jammer_whitelist_section',   // id.
-		__( 'Allow IP' ),                 // title.
-		/** 'traffic_jammer_settings_ip', //callback */
-		null,
-		'wp_traffic_jammer_whitelist'               // page.
+		'wp_traffic_jammer_whitelist_section', // id.
+		__( 'Allow IP' ), // title.
+		null, // callback.
+		'wp_traffic_jammer', // page.
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_whitelist',          // id.
-		__( 'Limit access to wp-login.php' ),            // title.
-		'wp_traffic_jammer_whitelist',          // callback display.
-		'wp_traffic_jammer_whitelist',             // page.
-		'wp_traffic_jammer_whitelist_section'   // section.
+		'wp_traffic_jammer_whitelist', // id.
+		__( 'Whitelist IP' ),   // title.
+		'wp_traffic_jammer_whitelist', // callback display.
+		'wp_traffic_jammer', // page.
+		'wp_traffic_jammer_whitelist_section', // section.
 	);
 
 	register_setting(
-		'wp_traffic_jammer_blocklist',                    // option group.
-		'wp_traffic_jammer_blocklist',            // option name.
+		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_blocklist',  // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer_user_agents',              // option group.
-		'wp_traffic_jammer_user_agents',            // option name.
+		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_user_agents', // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer_whitelist',                    // option group.
-		'wp_traffic_jammer_whitelist',            // option name.
+		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_whitelist', // option name.
 	);
 
 }
@@ -248,7 +247,7 @@ function wp_traffic_jammer_blocklist() {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_blocklist' class='regular-text'>" . esc_html( $blocklist ) . '</textarea>';
 	echo '<br/>';
-	echo '<small>Separated by comma (,)';
+	echo '<small>Separated by comma (,)</small>';
 }
 
 /**
@@ -260,7 +259,7 @@ function wp_traffic_jammer_user_agents() {
 	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_user_agents' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
 	echo '<br/>';
-	echo '<small>Separated by comma (,)';
+	echo '<small>Separated by comma (,)</small>';
 }
 
 /**
@@ -272,7 +271,7 @@ function wp_traffic_jammer_whitelist() {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_whitelist' class='regular-text'>" . esc_html( $whitelist ) . '</textarea>';
 	echo '<br/>';
-	echo '<small>Separated by comma (,)';
+	echo '<small>Separated by comma (,)</small>';
 }
 
 /**

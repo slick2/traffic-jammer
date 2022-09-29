@@ -22,9 +22,11 @@ jQuery(document).ready(function($) {
 			<li><a href="#whitelist" class="nav-tab" >Allow IP</a></li>
 		</ul>	
 		<form action="options.php" method="post" class="form-table">	
-		<div id="blocklist">
-			<?php settings_fields( 'wp_traffic_jammer_blocklist' ); ?>
-			<?php do_settings_sections( 'wp_traffic_jammer_blocklist' ); ?>			
+		<?php settings_fields( 'wp_traffic_jammer' ); ?>
+		<div id="blocklist">	
+			<table>
+				<?php do_settings_fields( 'wp_traffic_jammer', 'wp_traffic_jammer_blocklist_section' ); ?>			
+			</table>
 			<table class="striped fixed" cellspacing="0">
 				<thead>
 				<tr>
@@ -51,12 +53,17 @@ jQuery(document).ready(function($) {
 			</table>
 		</div>
 		<div id="useragents">
-			<?php settings_fields( 'wp_traffic_jammer_user_agents' ); ?>
-			<?php do_settings_sections( 'wp_traffic_jammer_user_agents' ); ?>
+		<table>
+			<?php do_settings_fields( 'wp_traffic_jammer', 'wp_traffic_jammer_user_agent_section' ); ?>	
+		</table>
 		</div>
 		<div id="whitelist">
-			<?php settings_fields( 'wp_traffic_jammer_whitelist' ); ?>
-			<?php do_settings_sections( 'wp_traffic_jammer_whitelist' ); ?>
+			<div class="card">
+			This is a list to limit login on the listed IPs.  Leave it blank to allow all.
+			</div>
+			<table>
+				<?php do_settings_fields( 'wp_traffic_jammer', 'wp_traffic_jammer_whitelist_section' ); ?>	
+			</table>
 			<table class="striped fixed" cellspacing="0">
 				<thead>
 				<tr>
@@ -80,13 +87,11 @@ jQuery(document).ready(function($) {
 					<td>2001:4450:49b6:9900:6498:6f80:4b15:240a</td>
 				</tr>
 				</tbody>
-			</table>
+			</table>	
 		</div>
 		<p class="submit">                    
 			<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
 		</p>
 		</form>
 	</div>
-	
-		
 </div>

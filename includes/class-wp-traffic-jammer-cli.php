@@ -8,7 +8,7 @@
 /**
  * WP Traffic Jammer command line
  */
-class WP_Traffic_Jammer_CLI {
+class Traffic_Jammer_CLI {
 	/**
 	 * Display status
 	 *
@@ -25,7 +25,7 @@ class WP_Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function block( $args ) {
-		wp_traffic_jammer_block_ip( $args[0] );
+		cef6d44b_block_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' addded to the block list' );
 	}
 	/**
@@ -35,7 +35,7 @@ class WP_Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function unblock( $args ) {
-		wp_traffic_jammer_unblock_ip( $args[0] );
+		cef6d44b_unblock_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' removed from the block list' );
 	}
 	/**
@@ -44,7 +44,7 @@ class WP_Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function trustall() {
-		wp_traffic_jammer_trust_all();
+		cef6d44b_trust_all();
 		WP_CLI::line( 'Allow all access to wp-login.php' );
 	}
 	/**
@@ -54,7 +54,7 @@ class WP_Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function trust( $args ) {
-		wp_traffic_jammer_trust_ip( $args[0] );
+		cef6d44b_trust_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' addded to the allow list' );
 	}
 	/**
@@ -64,17 +64,17 @@ class WP_Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function untrust( $args ) {
-		wp_traffic_jammer_untrust_ip( $args[0] );
+		cef6d44b_untrust_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' removed from the allow list' );
 	}
 
 }
 
 /**
- * Reister Command
+ * Register Command
  */
-function wp_traffic_jammer_cli_register_commands() {
-	WP_CLI::add_command( 'jam', 'WP_Traffic_Jammer_CLI' );
+function cef6d44b_cli_register_commands() {
+	WP_CLI::add_command( 'jam', 'Traffic_Jammer_CLI' );
 }
-add_action( 'cli_init', 'wp_traffic_jammer_cli_register_commands' );
+add_action( 'cli_init', 'cef6d44b_cli_register_commands' );
 

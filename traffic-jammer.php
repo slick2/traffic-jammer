@@ -9,7 +9,7 @@
  * Plugin URI:          https://github.com/slick2/traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes
  *                      malicious traffic.  The poormans WAF.
- * Version:             0.8
+ * Version:             1
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit

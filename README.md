@@ -24,6 +24,13 @@ The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful,
 - User agents 
 - Known bad bots
 
+When adding an IP, use the formats listed below.
+|      |                 |                                            |
+| ---  | ---             | ------------------------------------------ |
+| IPv4 |	IPv4 Address |	192.168.1.1                               |
+| IPv4 |	CIDR range	 |  192.168.1.0/24                            |  
+| IPv6 |    IPv6 Address |	2001:4450:49b6:9900:6498:6f80:4b15:240a   |
+
 ## Command Line
 - Block an IP using wp-cli
 ```
@@ -33,7 +40,6 @@ Unblock an IP using wp-cli
 ```
 wp jam unblock <ip>
 ```
-
 
 ## Installation
 

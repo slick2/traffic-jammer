@@ -23,6 +23,12 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 
 == Changelog ==
+
+= 0.9 =
+= 2022-09-29 =
+= tab content on the settings page
+= replace icon on the menu using dashicons
+
 = 0.8 =
 = 2022-09-28 =
 = renamed the plugin name to comply with WordPress.org 

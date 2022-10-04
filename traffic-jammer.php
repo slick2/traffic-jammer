@@ -19,8 +19,11 @@
  * Text Domain:         traffic-jammer
  */
 
+/** The prefixes used is a murmur hash of traffic_jammer cef6d44b. */
+
+
 /** Sanitize server variables */
-$wptj_server = array_map( 'sanitize_server_var', $_SERVER );
+$cef6d44b_server = array_map( 'cef6d44b_server_var', $_SERVER );
 
 wp_enqueue_script( 'jquery-ui-tabs' );
 
@@ -29,7 +32,7 @@ wp_enqueue_script( 'jquery-ui-tabs' );
  *
  * @return void
  */
-function wp_traffic_jammer_activate() {
+function cef6d44b_activate() {
 	// define the bad bots.
 	$bad_bots  = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
 	$options   = '';
@@ -53,14 +56,14 @@ function wp_traffic_jammer_activate() {
 	}
 
 }
-register_activation_hook( __FILE__, 'wp_traffic_jammer_activate' );
+register_activation_hook( __FILE__, 'cef6d44b_activate' );
 
 /**
  * Deactivate plugin
  *
  * @return void
  */
-function wp_traffic_jammer_deactivate() {
+function cef6d44b_deactivate() {
 	delete_option( 'wp_traffic_jammer_options' );
 	delete_option( 'wp_traffic_jammer_blocklist' );
 	delete_option( 'wp_traffic_jammer_whitelist' );
@@ -72,32 +75,32 @@ function wp_traffic_jammer_deactivate() {
  *
  * @return void
  */
-function wp_traffic_jammer_limit_ip() {
-	global $wptj_server;
+function cef6d44b_limit_ip() {
+	global $cef6d44b_server;
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 
 	if ( ! isset( $options['blocklist'] ) ) {
 		return;
 	}
 
-	$ip        = $wptj_server['REMOTE_ADDR'];
+	$ip        = $cef6d44b_server['REMOTE_ADDR'];
 	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
 	/**  Check if this IP is in blocklist. */
-	$ip_forbidden = wp_traffic_jammer_check_ip( $ip, $blocklist );
+	$ip_forbidden = cef6d44b_check_ip( $ip, $blocklist );
 
 	if ( $ip_forbidden ) {
 		header( 'HTTP/1.0 403 Forbidden' );
 		exit;
 	}
 }
-add_action( 'init', 'wp_traffic_jammer_limit_ip' );
+add_action( 'init', 'cef6d44b_limit_ip' );
 
 /**
  * Whitelist
  */
-function wp_traffic_jammer_whitelist_ip() {
-	global $wptj_server;
+function cef6d44b_whitelist_ip() {
+	global $cef6d44b_server;
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 
 	if ( empty( $whitelist ) ) {
@@ -106,24 +109,24 @@ function wp_traffic_jammer_whitelist_ip() {
 
 	$whitelist = array_map( 'trim', explode( ',', $whitelist ) );
 
-	$ip = $wptj_server['REMOTE_ADDR'];
+	$ip = $cef6d44b_server['REMOTE_ADDR'];
 	// Check if this IP is in whitelistlist.
-	$ip_allow = wp_traffic_jammer_check_ip( $ip, $whitelist );
+	$ip_allow = cef6d44b_check_ip( $ip, $whitelist );
 
-	if ( preg_match( '/(wp-login.php)/', $wptj_server['REQUEST_URI'] ) ) {
+	if ( preg_match( '/(wp-login.php)/', $cef6d44b_server['REQUEST_URI'] ) ) {
 		if ( ! $ip_allow ) {
 			header( 'HTTP/1.0 403 Forbidden' );
 			exit;
 		}
 	}
 }
-add_action( 'init', 'wp_traffic_jammer_whitelist_ip' );
+add_action( 'init', 'cef6d44b_whitelist_ip' );
 /**
  * Limit User Agents
  *
  * @return void
  */
-function wp_traffic_jammer_limit_user_agents() {
+function cef6d44b_limit_user_agents() {
 	global $wptj_server;
 	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
 
@@ -141,7 +144,7 @@ function wp_traffic_jammer_limit_user_agents() {
 		}
 	}
 }
-add_action( 'init', 'wp_traffic_jammer_limit_user_agents' );
+add_action( 'init', 'cef6d44b_limit_user_agents' );
 
 /**
  *
@@ -149,25 +152,37 @@ add_action( 'init', 'wp_traffic_jammer_limit_user_agents' );
  *
  * @return void
  */
-function wp_traffic_jammer_add_page() {
+function cef6d44b_add_page() {
 	add_menu_page(
 		'Traffic Jammer', // page title.
 		'Traffic Jammer', // menu title.
 		'manage_options', // capability.
 		'wp_traffic_jammer', // menu slug.
-		'wp_traffic_jammer_options_page', // callback.
+		'cef6d44b_options_page' // callback.
 		'dashicons-privacy',
 	);
 }
-add_action( 'admin_menu', 'wp_traffic_jammer_add_page' );
+add_action( 'admin_menu', 'cef6d44b_add_page' );
 
 /**
  * Options Page
  *
  * @return void
  */
-function wp_traffic_jammer_options_page() {
-	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
+function cef6d44b_options_page() {
+	?>
+	<div class="wrap">
+		<h1>Traffic Jammer</h1>
+		<p><?php esc_html_e( 'Traffic Jammer offers ability to block IP and crawlers that hog system resources.' ); ?></p>
+		<form action="options.php" method="post" class="form-table">
+			<?php settings_fields( 'wp_traffic_jammer' ); ?>
+			<?php do_settings_sections( 'wp_traffic_jammer' ); ?>
+			<p class="submit">                    
+				<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
+			</p>
+		</form>
+	</div>
+	<?php
 }
 
 /**
@@ -175,7 +190,7 @@ function wp_traffic_jammer_options_page() {
  *
  * @return void
  */
-function wp_traffic_jammer_admin_init() {
+function cef6d44b_admin_init() {
 
 	add_settings_section(
 		'wp_traffic_jammer_blocklist_section', // id.
@@ -185,11 +200,11 @@ function wp_traffic_jammer_admin_init() {
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_blocklist', // id.
-		__( 'Block IP' ),  // title.
-		'wp_traffic_jammer_blocklist', // callback display.
-		'wp_traffic_jammer', // page.
-		'wp_traffic_jammer_blocklist_section' // section.
+		'wp_traffic_jammer_blocklist',          // id.
+		__( 'IP blocklist' ),            // title.
+		'cef6d44b_blocklist',          // callback display.
+		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_blocklist_section'   // section.
 	);
 
 	add_settings_section(
@@ -200,11 +215,11 @@ function wp_traffic_jammer_admin_init() {
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_user_agents', // id.
-		__( 'User Agent Blocklist' ),    // title.
-		'wp_traffic_jammer_user_agents', // callback display.
-		'wp_traffic_jammer',             // page.
-		'wp_traffic_jammer_user_agent_section', // section.
+		'wp_traffic_jammer_user_agents',          // id.
+		__( 'User Agent blocklist' ),                 // title.
+		'cef6d44b_user_agents',          // callback display.
+		'wp_traffic_jammer',                     // page.
+		'wp_traffic_jammer_user_agent_section'   // section.
 	);
 
 	add_settings_section(
@@ -215,11 +230,11 @@ function wp_traffic_jammer_admin_init() {
 	);
 
 	add_settings_field(
-		'wp_traffic_jammer_whitelist', // id.
-		__( 'Whitelist IP' ),   // title.
-		'wp_traffic_jammer_whitelist', // callback display.
-		'wp_traffic_jammer', // page.
-		'wp_traffic_jammer_whitelist_section', // section.
+		'wp_traffic_jammer_whitelist',          // id.
+		__( 'Limit access to wp-login.php' ),            // title.
+		'cef6d44b_whitelist',          // callback display.
+		'wp_traffic_jammer',             // page.
+		'wp_traffic_jammer_whitelist_section'   // section.
 	);
 
 	register_setting(
@@ -238,12 +253,12 @@ function wp_traffic_jammer_admin_init() {
 	);
 
 }
-add_action( 'admin_init', 'wp_traffic_jammer_admin_init' );
+add_action( 'admin_init', 'cef6d44b_admin_init' );
 
 /**
  * Blocklist Field
  */
-function wp_traffic_jammer_blocklist() {
+function cef6d44b_blocklist() {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_blocklist' class='regular-text'>" . esc_html( $blocklist ) . '</textarea>';
 	echo '<br/>';
@@ -255,7 +270,7 @@ function wp_traffic_jammer_blocklist() {
  *
  * @return void
  */
-function wp_traffic_jammer_user_agents() {
+function cef6d44b_user_agents() {
 	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_user_agents' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
 	echo '<br/>';
@@ -267,7 +282,7 @@ function wp_traffic_jammer_user_agents() {
  *
  * @return void
  */
-function wp_traffic_jammer_whitelist() {
+function cef6d44b_whitelist() {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 	echo "<textarea rows='12' name='wp_traffic_jammer_whitelist' class='regular-text'>" . esc_html( $whitelist ) . '</textarea>';
 	echo '<br/>';
@@ -280,9 +295,9 @@ function wp_traffic_jammer_whitelist() {
  * @param string $server variables.
  * @return mixed sanitized output
  */
-function sanitize_server_var( $server ) {
+function cef6d44b_server_var( $server ) {
 	if ( is_string( $server ) ) {
-		return stripslashes( $server );
+		return sanitize_text_field( $server );
 	}
 }
 
@@ -293,7 +308,7 @@ function sanitize_server_var( $server ) {
  *
  * @return void
  */
-function wp_traffic_jammer_block_ip( $ip ) {
+function cef6d44b_block_ip( $ip ) {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 	if ( ! empty( $blocklist )) {
 		$ips = array_map( 'trim', explode( ',', $blocklist ) );
@@ -301,7 +316,7 @@ function wp_traffic_jammer_block_ip( $ip ) {
 		$ips = array();
 	}
 	// convert to array to traverse.
-	array_push( $ips, $ip );
+	array_push( $ips, sanitize_text_field( $ip ) );
 	if ( count( $ips ) > 1 ) {
 		$blocklist = implode( ",\n", $ips );
 	} else {
@@ -317,7 +332,7 @@ function wp_traffic_jammer_block_ip( $ip ) {
  *
  * @return void
  */
-function wp_traffic_jammer_unblock_ip( $ip ) {
+function cef6d44b_unblock_ip( $ip ) {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 	// convert to array.
 	$ips = array_map( 'trim', explode( ',', $blocklist ) );
@@ -335,7 +350,7 @@ function wp_traffic_jammer_unblock_ip( $ip ) {
  *
  * @return void
  */
-function wp_traffic_jammer_trust_ip( $ip ) {
+function cef6d44b_trust_ip( $ip ) {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 	if ( ! empty( $whitelist )) {
 		$ips = array_map( 'trim', explode( ',', $whitelist ) );
@@ -343,7 +358,7 @@ function wp_traffic_jammer_trust_ip( $ip ) {
 		$ips = array();
 	}
 	// convert to array to traverse.
-	array_push( $ips, $ip );
+	array_push( $ips, sanitize_text_field( $ip ) );
 	if ( count( $ips ) > 1 ) {
 		$whitelist = implode( ",\n", $ips );
 	} else {
@@ -359,7 +374,7 @@ function wp_traffic_jammer_trust_ip( $ip ) {
  *
  * @return void
  */
-function wp_traffic_jammer_untrust_ip( $ip ) {
+function cef6d44b_untrust_ip( $ip ) {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
 	// convert to array.
 	$ips = array_map( 'trim', explode( ',', $whitelist ) );
@@ -374,7 +389,7 @@ function wp_traffic_jammer_untrust_ip( $ip ) {
  *
  * @return void
  */
-function wp_traffic_jammer_trust_all() {
+function cef6d44b_jammer_trust_all() {
 	update_option( 'wp_traffic_jammer_whitelist', '' );
 }
 
@@ -385,7 +400,7 @@ function wp_traffic_jammer_trust_all() {
  * @param array  $ip_haystack list of IP.
  * @return bool true/false when an IP is found.
  */
-function wp_traffic_jammer_check_ip( $ip, $ip_haystack ) {
+function cef6d44b_check_ip( $ip, $ip_haystack ) {
 	$ip_found = false;
 	$ip_found = in_array( $ip, $ip_haystack, true );
 
@@ -399,8 +414,8 @@ function wp_traffic_jammer_check_ip( $ip, $ip_haystack ) {
 				// subnet.
 				$_ip_net  = ip2long( $_net );
 				$_ip_mask = ~( ( 1 << ( 32 - $_mask ) ) - 1 );
-				$ip_found = ( $_ip & $_ip_mask );
-				if ( $ip_found == ( $_ip_net & $_ip_mask ) ) {
+				if ( ( $_ip & $_ip_mask ) === ( $_ip_net & $_ip_mask ) ) {
+					$ip_found = true;
 					break;
 				}
 			}

@@ -2,11 +2,11 @@
 /**
  * Command for wp-cli
  *
- * @package WPTrafficJammer
+ * @package TrafficJammer
  */
 
 /**
- * WP Traffic Jammer command line
+ * Traffic Jammer command line
  */
 class Traffic_Jammer_CLI {
 	/**
@@ -15,7 +15,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function status() {
-		WP_CLI::line( 'WP Traffic Jammer activated' );
+		WP_CLI::line( 'Traffic Jammer activated' );
 		WP_CLI::line( '' );
 	}
 	/**
@@ -25,7 +25,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function block( $args ) {
-		cef6d44b_block_ip( $args[0] );
+		trafficjammer_block_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' addded to the block list' );
 	}
 	/**
@@ -35,7 +35,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function unblock( $args ) {
-		cef6d44b_unblock_ip( $args[0] );
+		trafficjammer_unblock_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' removed from the block list' );
 	}
 	/**
@@ -44,7 +44,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function trustall() {
-		cef6d44b_trust_all();
+		trafficjammer_trust_all();
 		WP_CLI::line( 'Allow all access to wp-login.php' );
 	}
 	/**
@@ -54,7 +54,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function trust( $args ) {
-		cef6d44b_trust_ip( $args[0] );
+		trafficjammer_trust_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' addded to the allow list' );
 	}
 	/**
@@ -64,7 +64,7 @@ class Traffic_Jammer_CLI {
 	 * @return void
 	 */
 	public function untrust( $args ) {
-		cef6d44b_untrust_ip( $args[0] );
+		trafficjammer_untrust_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' removed from the allow list' );
 	}
 
@@ -73,8 +73,8 @@ class Traffic_Jammer_CLI {
 /**
  * Register Command
  */
-function cef6d44b_cli_register_commands() {
+function trafficjammer_cli_register_commands() {
 	WP_CLI::add_command( 'jam', 'Traffic_Jammer_CLI' );
 }
-add_action( 'cli_init', 'cef6d44b_cli_register_commands' );
+add_action( 'cli_init', 'trafficjammer_cli_register_commands' );
 

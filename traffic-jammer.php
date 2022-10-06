@@ -74,7 +74,7 @@ function trafficjammer_limit_ip() {
 	global $cef6d44b_server;
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 
-	if ( ! isset( $options['blocklist'] ) ) {
+	if ( ! isset( $blocklist ) ) {
 		return;
 	}
 

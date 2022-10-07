@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
 Tested up to: 6.0.2
-Stable tag: 1
+Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,16 +13,30 @@ WordPress plugin to block IP and bots that causes malicious traffic
 
 == Description ==
 
-WordPress plugin to block IP and bots that causes malicious traffic
+The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
+
+- Single IP
+- Range of IP using CIDR format
+- User agents 
+- Known bad bots
+
+<h4>WP-CLI commands</h4>
+
+- wp jam block 127.0.0.10
+- wp jam unblock 127.0.0.10
+
 
 == Installation ===
 
-1. Download the plugin via the github release page
+1. Download the plugin via WordPress.org page
 1. Upload the compress archive through the 'Plugins > Add New > Upload' screen in your WordPress dashbboard
 1. Activate the plugin through the 'Plugins' menu in WordPress 
 
 
 == Changelog ==
+= 1.0.0 =
+= 2022-10-07 =
+= Stable release approved by WordPress.org
 
 = 0.9 =
 = 2022-09-29 =

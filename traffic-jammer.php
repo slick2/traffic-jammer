@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://github.com/slick2/traffic-jammer
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.0
+ * Version:             1.0.1
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -164,19 +164,7 @@ add_action( 'admin_menu', 'trafficjammer_add_page' );
  * @return void
  */
 function trafficjammer_options_page() {
-	?>
-	<div class="wrap">
-		<h1>Traffic Jammer</h1>
-		<p><?php esc_html_e( 'Traffic Jammer offers ability to block IP and crawlers that hog system resources.' ); ?></p>
-		<form action="options.php" method="post" class="form-table">
-			<?php settings_fields( 'wp_traffic_jammer' ); ?>
-			<?php do_settings_sections( 'wp_traffic_jammer' ); ?>
-			<p class="submit">                    
-				<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
-			</p>
-		</form>
-	</div>
-	<?php
+	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
 }
 
 /**
@@ -245,6 +233,8 @@ function trafficjammer_admin_init() {
 		'wp_traffic_jammer', // option group.
 		'wp_traffic_jammer_whitelist', // option name.
 	);
+
+	wp_enqueue_script( 'jquery-ui-tabs' );
 
 }
 add_action( 'admin_init', 'trafficjammer_admin_init' );

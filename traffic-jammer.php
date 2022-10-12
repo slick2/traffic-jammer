@@ -63,7 +63,8 @@ function trafficjammer_deactivate() {
 	delete_option( 'wp_traffic_jammer_whitelist' );
 	delete_option( 'wp_traffic_jammer_user_agents' );
 }
-register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' ); 
+// Not for now register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );.
+
 /**
  * Limit IP
  *

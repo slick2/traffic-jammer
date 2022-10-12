@@ -63,7 +63,7 @@ function trafficjammer_deactivate() {
 	delete_option( 'wp_traffic_jammer_whitelist' );
 	delete_option( 'wp_traffic_jammer_user_agents' );
 }
-// register_deactivation_hook( __FILE__, 'wp_traffic_jammer_deactivate' ); uncomment later.
+register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' ); 
 /**
  * Limit IP
  *
@@ -164,6 +164,7 @@ add_action( 'admin_menu', 'trafficjammer_add_page' );
  * @return void
  */
 function trafficjammer_options_page() {
+	global $cef6d44b_server;
 	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
 }
 
@@ -198,7 +199,7 @@ function trafficjammer_admin_init() {
 
 	add_settings_field(
 		'wp_traffic_jammer_user_agents',          // id.
-		__( 'User Agent blocklist' ),                 // title.
+		__( 'Block Bots' ),                 // title.
 		'trafficjammer_user_agents',          // callback display.
 		'wp_traffic_jammer',                     // page.
 		'wp_traffic_jammer_user_agent_section'   // section.
@@ -220,17 +221,17 @@ function trafficjammer_admin_init() {
 	);
 
 	register_setting(
-		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_blocklist', // option group.
 		'wp_traffic_jammer_blocklist',  // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_user_agents', // option group.
 		'wp_traffic_jammer_user_agents', // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer', // option group.
+		'wp_traffic_jammer_whitelist', // option group.
 		'wp_traffic_jammer_whitelist', // option name.
 	);
 
@@ -256,7 +257,7 @@ function trafficjammer_blocklist() {
  */
 function trafficjammer_user_agents() {
 	$user_agents = get_option( 'wp_traffic_jammer_user_agents' );
-	echo "<textarea rows='12' name='wp_traffic_jammer_user_agents' class='regular-text'>" . esc_html( $user_agents ) . '</textarea>';
+	echo "<textarea rows='12' name='wp_traffic_jammer_user_agents' class='regular-text'>" . esc_textarea( $user_agents ) . '</textarea>';
 	echo '<br/>';
 	echo '<small>Separated by comma (,)</small>';
 }
@@ -268,7 +269,7 @@ function trafficjammer_user_agents() {
  */
 function trafficjammer_whitelist() {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
-	echo "<textarea rows='12' name='wp_traffic_jammer_whitelist' class='regular-text'>" . esc_html( $whitelist ) . '</textarea>';
+	echo "<textarea rows='12' name='wp_traffic_jammer_whitelist' class='regular-text'>" . esc_textarea( $whitelist ) . '</textarea>';
 	echo '<br/>';
 	echo '<small>Separated by comma (,)</small>';
 }

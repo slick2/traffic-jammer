@@ -34,6 +34,11 @@ The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful,
 
 
 == Changelog ==
+= 1.0.1 =
+* tabbed content
+* show current IP
+* simple instructions
+
 = 1.0.0 =
 * 2022-10-07
 * Stable release approved by WordPress.org

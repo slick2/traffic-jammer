@@ -65,6 +65,29 @@ function trafficjammer_deactivate() {
 }
 // Not for now register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );.
 
+
+/**
+ * Log live traffic
+ *
+ * @return void
+ */
+function trafficjammer_traffic_live() {
+	global $wpdb, $cef6d44b_server;
+
+	$wpdb->insert(
+		$wpdb->prefix . 'trafficjammer_traffic',
+		array(
+			'IP'         => $cef6d44b_server['REMOTE_ADDR'],
+			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
+			'status'     => http_response_code(),
+			'request'    => $cef6d44b_server['REQUEST_URI'],
+			'ref'        => $cef6d44b_server['HTTP_REFERER'],
+		)
+	);
+}
+add_action( 'init', 'trafficjammer_traffic_live' );
+
+
 /**
  * Limit IP
  *
@@ -156,6 +179,14 @@ function trafficjammer_add_page() {
 		'trafficjammer_options_page', // callback.
 		'dashicons-privacy',
 	);
+	add_submenu_page(
+		'wp_traffic_jammer',
+		'Traffic Logs',
+		'Traffic logs',
+		'manage_options',
+		'trafficjammer_traffic_logs',
+		'trafficjammer_traffic_Logs_submenu'
+	);
 }
 add_action( 'admin_menu', 'trafficjammer_add_page' );
 
@@ -165,9 +196,20 @@ add_action( 'admin_menu', 'trafficjammer_add_page' );
  * @return void
  */
 function trafficjammer_options_page() {
-	global $cef6d44b_server;
+	global $cef6d44b_server, $wpdb;
 	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
 }
+
+/**
+ * Traffic Logs - Sub Menu Page
+ *
+ * @return void
+ */
+function trafficjammer_traffic_logs_submenu() {
+	global $cef6d44b_server, $wpdb;
+	require plugin_dir_path( __FILE__ ) . 'partials/traffic-logs.php';
+}
+
 
 /**
  * Admin Initialize

@@ -31,6 +31,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<th scope="col">IP</th>
 				<th scope="col">Count</th>
+				<th scope="col">Check</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -38,6 +39,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<td><?php echo esc_html( $value->IP ); ?></td>
 				<td><?php echo esc_html( number_format( $value->num_visits, 0 ) ); ?></td>
+				<td><a href="https://www.abuseipdb.com/check/<?php echo esc_html( $value->IP ); ?>" target="_blank" title="Go to abuseipdb.com"><span class="dashicons dashicons-welcome-view-site"></span></a></td>
 			</tr>
 			<?php } ?>
 		</tbody>
@@ -45,6 +47,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<th scope="col">IP</th>
 				<th scope="col">Count</th>
+				<th scope="col">Check</th>
 			</tr>
 		</tfoot>
 	<?php

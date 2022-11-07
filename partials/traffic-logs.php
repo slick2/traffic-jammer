@@ -23,7 +23,7 @@ if ( ! empty( $_GET['tab'] ) ) {
 	<div class="tabs-content">
 <?php
 if ( 'ip' === $cef6d44b_tab ) {
-	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic GROUP BY IP ORDER BY num_visits DESC LIMIT 25' ) );
+	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 25' ) );
 
 	?>
 <table class="wp-list-table widefat fixed striped posts">
@@ -52,7 +52,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 ?>
 <?php
 if ( 'useragent' === $cef6d44b_tab ) {
-	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, user_agent FROM ' . $wpdb->prefix . 'trafficjammer_traffic GROUP BY user_agent ORDER BY num_visits DESC LIMIT 25' ) );
+	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, user_agent FROM ' . $wpdb->prefix . 'trafficjammer_traffic where user_agent is not null GROUP BY user_agent ORDER BY num_visits DESC LIMIT 25' ) );
 
 	?>
 <table class="wp-list-table widefat fixed striped posts">

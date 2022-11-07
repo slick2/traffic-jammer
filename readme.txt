@@ -3,8 +3,8 @@ Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
-Tested up to: 6.0.2
-Stable tag: 1.0.1
+Tested up to: 6.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -34,6 +34,9 @@ The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful,
 
 
 == Changelog ==
+= 1.0.2 =
+* added reports page
+
 = 1.0.1 =
 * tabbed content
 * show current IP

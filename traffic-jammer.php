@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.1
+ * Version:             1.0.2
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -27,6 +27,7 @@ $cef6d44b_server = array_map( 'trafficjammer_server_var', $_SERVER );
  * @return void
  */
 function trafficjammer_activate() {
+	global $wpdb;
 	// define the bad bots.
 	$bad_bots  = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
 	$options   = '';
@@ -49,6 +50,25 @@ function trafficjammer_activate() {
 		add_option( 'wp_traffic_jammer_user_agents', $bad_bots, '', 'no' );
 	}
 
+	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	$collate_charset = $wpdb->get_charset_collate();
+	// Define the table for traffic logs.
+	$sql = "CREATE TABLE $table_name (
+		`id` int(11) NOT NULL AUTO_INCREMENT,
+		`IP` varchar(45) DEFAULT NULL,
+		`user_agent` varchar(255) DEFAULT NULL,
+		`status` varchar(45) DEFAULT NULL,
+		`request` varchar(255) DEFAULT NULL,
+		`ref` varchar(255) DEFAULT NULL,
+		`date` datetime DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`id`),
+		UNIQUE KEY `id_UNIQUE` (`id`)
+	  ) ENGINE=InnoDB $collate_charset;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+	dbDelta( $sql );
+
 }
 register_activation_hook( __FILE__, 'trafficjammer_activate' );
 
@@ -58,12 +78,43 @@ register_activation_hook( __FILE__, 'trafficjammer_activate' );
  * @return void
  */
 function trafficjammer_deactivate() {
+	global $wpdb;
+	/**
 	delete_option( 'wp_traffic_jammer_options' );
 	delete_option( 'wp_traffic_jammer_blocklist' );
 	delete_option( 'wp_traffic_jammer_whitelist' );
 	delete_option( 'wp_traffic_jammer_user_agents' );
+	*/
+	// table name.
+	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	// cleanup.
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
+
 }
-// Not for now register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );.
+register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
+
+
+/**
+ * Log live traffic
+ *
+ * @return void
+ */
+function trafficjammer_traffic_live() {
+	global $wpdb, $cef6d44b_server;
+
+	$wpdb->insert(
+		$wpdb->prefix . 'trafficjammer_traffic',
+		array(
+			'IP'         => $cef6d44b_server['REMOTE_ADDR'],
+			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
+			'status'     => http_response_code(),
+			'request'    => $cef6d44b_server['REQUEST_URI'],
+			'ref'        => $cef6d44b_server['HTTP_REFERER'],
+		)
+	);
+}
+add_action( 'init', 'trafficjammer_traffic_live' );
+
 
 /**
  * Limit IP
@@ -154,7 +205,23 @@ function trafficjammer_add_page() {
 		'manage_options', // capability.
 		'wp_traffic_jammer', // menu slug.
 		'trafficjammer_options_page', // callback.
-		'dashicons-privacy',
+		'dashicons-privacy'
+	);
+	add_submenu_page(
+		'wp_traffic_jammer',
+		'Dashboard',
+		'Dashboard',
+		'manage_options',
+		'wp_traffic_jammer',
+		'trafficjammer_options_page', // callback.
+	);
+	add_submenu_page(
+		'wp_traffic_jammer',
+		'Traffic Activity',
+		'Reports',
+		'manage_options',
+		'trafficjammer_traffic_logs',
+		'trafficjammer_traffic_logs_submenu'
 	);
 }
 add_action( 'admin_menu', 'trafficjammer_add_page' );
@@ -165,9 +232,20 @@ add_action( 'admin_menu', 'trafficjammer_add_page' );
  * @return void
  */
 function trafficjammer_options_page() {
-	global $cef6d44b_server;
+	global $cef6d44b_server, $wpdb;
 	require plugin_dir_path( __FILE__ ) . 'partials/options-page.php';
 }
+
+/**
+ * Traffic Logs - Sub Menu Page
+ *
+ * @return void
+ */
+function trafficjammer_traffic_logs_submenu() {
+	global $cef6d44b_server, $wpdb;
+	require plugin_dir_path( __FILE__ ) . 'partials/traffic-logs.php';
+}
+
 
 /**
  * Admin Initialize

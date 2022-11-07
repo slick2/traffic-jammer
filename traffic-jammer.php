@@ -27,6 +27,7 @@ $cef6d44b_server = array_map( 'trafficjammer_server_var', $_SERVER );
  * @return void
  */
 function trafficjammer_activate() {
+	global $wpdb;
 	// define the bad bots.
 	$bad_bots  = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
 	$options   = '';
@@ -49,6 +50,25 @@ function trafficjammer_activate() {
 		add_option( 'wp_traffic_jammer_user_agents', $bad_bots, '', 'no' );
 	}
 
+	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	$collate_charset = $wpdb->get_charset_collate();
+	// Define the table for traffic logs.
+	$sql = "CREATE TABLE $table_name (
+		`id` int(11) NOT NULL AUTO_INCREMENT,
+		`IP` varchar(45) DEFAULT NULL,
+		`user_agent` varchar(255) DEFAULT NULL,
+		`status` varchar(45) DEFAULT NULL,
+		`request` varchar(255) DEFAULT NULL,
+		`ref` varchar(255) DEFAULT NULL,
+		`date` datetime DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`id`),
+		UNIQUE KEY `id_UNIQUE` (`id`)
+	  ) ENGINE=InnoDB $collate_charset;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+	dbDelta( $sql );
+
 }
 register_activation_hook( __FILE__, 'trafficjammer_activate' );
 
@@ -58,12 +78,20 @@ register_activation_hook( __FILE__, 'trafficjammer_activate' );
  * @return void
  */
 function trafficjammer_deactivate() {
+	global $wpdb;
+	/**
 	delete_option( 'wp_traffic_jammer_options' );
 	delete_option( 'wp_traffic_jammer_blocklist' );
 	delete_option( 'wp_traffic_jammer_whitelist' );
 	delete_option( 'wp_traffic_jammer_user_agents' );
+	*/
+	// table name.
+	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	// cleanup.
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
+
 }
-// Not for now register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );.
+register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
 
 
 /**

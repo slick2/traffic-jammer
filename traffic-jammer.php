@@ -205,15 +205,23 @@ function trafficjammer_add_page() {
 		'manage_options', // capability.
 		'wp_traffic_jammer', // menu slug.
 		'trafficjammer_options_page', // callback.
-		'dashicons-privacy',
+		'dashicons-privacy'
 	);
 	add_submenu_page(
 		'wp_traffic_jammer',
-		'Traffic Logs',
-		'Traffic logs',
+		'Dashboard',
+		'Dashboard',
+		'manage_options',
+		'wp_traffic_jammer',
+		'trafficjammer_options_page', // callback.
+	);
+	add_submenu_page(
+		'wp_traffic_jammer',
+		'Traffic Activity',
+		'Reports',
 		'manage_options',
 		'trafficjammer_traffic_logs',
-		'trafficjammer_traffic_Logs_submenu'
+		'trafficjammer_traffic_logs_submenu'
 	);
 }
 add_action( 'admin_menu', 'trafficjammer_add_page' );

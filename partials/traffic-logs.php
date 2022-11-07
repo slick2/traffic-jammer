@@ -8,9 +8,9 @@
 $traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'trafficjammer_traffic ORDER BY date DESC LIMIT 25' ) );
 ?>
 <div class="wrap">
-	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer - Logs</h2>
+	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer - Activity</h2>
 
-	<h3> Recent Traffic </h3>
+	<h3> Recent Activity </h3>
 	<table class="wp-list-table widefat fixed striped posts">
 	<thead>
 		<tr>

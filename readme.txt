@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
 Tested up to: 6.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,8 @@ The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful,
 - User agents 
 - Known bad bots
 
+Note: Previous installations less than version 1.0.3 need to be reinstalled for the new features to show up.
+
 <h4>WP-CLI commands</h4>
 
 - wp jam block 127.0.0.10
@@ -33,7 +35,12 @@ The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful,
 1. Activate the plugin through the 'Plugins' menu in WordPress 
 
 
+
+
 == Changelog ==
+= 1.0.3 =
+* added database version log for future updates
+
 = 1.0.2 =
 * added reports page
 

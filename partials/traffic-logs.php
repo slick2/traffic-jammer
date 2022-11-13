@@ -11,10 +11,12 @@ if ( ! empty( $_GET['tab'] ) ) {
 } else {
 	$cef6d44b_tab = 'ip';
 }
-
+$setting_options = get_option( 'wp_traffic_jammer_options' );
+$interval_days = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
 ?>
 <div class="wrap">
 	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer - Reports</h2>
+	<p><?php esc_html_e( 'Logs retention is set to ' . $interval_days . ' days.' ); ?></p>
 	<nav class="nav-tab-wrapper wp-clearfix" aria-label="Traffic Jammer Tabs">
 		<a href="?page=trafficjammer_traffic_logs&tab=ip" class="nav-tab <?php echo $cef6d44b_tab == 'ip' ? 'nav-tab-active' : '';  ?>" >Top IP</a>
 		<a href="?page=trafficjammer_traffic_logs&tab=useragent" class="nav-tab <?php echo $cef6d44b_tab == 'useragent' ? 'nav-tab-active' : '';  ?>">Top User Agents</a>

@@ -119,7 +119,7 @@ function trafficjammer_cron_exec() {
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
-	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL' . $interval_day . ' DAY );' );
+	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 
@@ -414,14 +414,15 @@ function trafficjammer_whitelist() {
  */
 function trafficjammer_log_retention_field() {
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$interval_day = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
 	echo '<select name="wp_traffic_jammer_options[log_retention]">';
 	echo '<option value="3" ';
-	if ( $setting_options['log_retention'] == 3 ) {
+	if ( $interval_day == 3 ) {
 		echo 'SELECTED';
 	}
 	echo '>3 days</option>';
 	echo '<option value="7"';
-	if ( $setting_options['log_retention'] == 7 ) {
+	if ( $interval_day == 7 ) {
 		echo 'SELECTED';
 	}
 	echo '>7 days</option>';

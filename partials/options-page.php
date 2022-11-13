@@ -19,13 +19,13 @@ if ( ! empty( $_GET['tab'] ) ) {
 		<a href="?page=wp_traffic_jammer&tab=blockip" class="nav-tab <?php echo $cef6d44b_tab == 'blockip' ? 'nav-tab-active' : '';  ?>" >Block IP</a>
 		<a href="?page=wp_traffic_jammer&tab=blockbot" class="nav-tab <?php echo $cef6d44b_tab == 'blockbot' ? 'nav-tab-active' : '';  ?>">Block Bots</a>
 		<a href="?page=wp_traffic_jammer&tab=allowip" class="nav-tab <?php echo $cef6d44b_tab == 'allowip' ? 'nav-tab-active' : ''; ?>">Whitelist IP</a>
+		<a href="?page=wp_traffic_jammer&tab=settings" class="nav-tab <?php echo $cef6d44b_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
 	</nav>
 	<div class="tabs-content">
 
 	<?php
-	switch ( $cef6d44b_tab ) {
-		case 'blockbot':
-			?>
+	if ( 'blockbot' === $cef6d44b_tab ) {
+		?>
 		<form action="options.php" method="post" class="form-table">	
 			<?php settings_fields( 'wp_traffic_jammer_user_agents' ); ?>
 		<table>
@@ -35,10 +35,12 @@ if ( ! empty( $_GET['tab'] ) ) {
 			<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
 		</p>
 		</form>
-			<?php
-			break;
-		case 'allowip':
-			?>
+		<?php
+	}
+	?>
+	<?php
+	if ( 'allowip' === $cef6d44b_tab ) {
+		?>
 			<div class="card">
 			This is a list to limit login on the listed IPs.  Leave it blank to allow all.
 			</div>
@@ -51,11 +53,12 @@ if ( ! empty( $_GET['tab'] ) ) {
 			<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
 			</p>
 			</form>
-			<?php
-			break;
-		case 'blockip':
-		default:
-			?>
+		<?php
+	}
+	?>
+	<?php
+	if ( 'blockip' === $cef6d44b_tab ) {
+		?>
 			<form action="options.php" method="post" class="form-table">	
 			<?php settings_fields( 'wp_traffic_jammer_blocklist' ); ?>
 			<table>
@@ -68,9 +71,24 @@ if ( ! empty( $_GET['tab'] ) ) {
 		<?php
 	}
 	?>
+	<?php
+	if ( 'settings' === $cef6d44b_tab ) {
+		?>
+		<form action="options.php" method="post" class="form-table">	
+		<?php settings_fields( 'wp_traffic_jammer_options' ); ?>
+			<table>
+				<?php do_settings_fields( 'wp_traffic_jammer', 'trafficjammer_settings_section' ); ?>			
+			</table>
+		<p class="submit">                    
+		<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
+		</p>
+		</form>
+		<?php
+	}
+	?>
 	</div>
 	<?php
-		if ( $cef6d44b_tab != 'blockbot' ) {	
+	if ( $cef6d44b_tab === 'blockip' || $cef6d44b_tab === 'allowip' ) {
 		?>
 	<p>
 		<b><span class="dashicons-before dashicons-star-filled"></span> Your IP: <?php echo esc_html( $cef6d44b_server['REMOTE_ADDR']); ?></b>

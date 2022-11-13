@@ -35,7 +35,12 @@ function trafficjammer_activate() {
 	$whitelist = '';
 	// Get the options.
 	if ( get_option( 'wp_traffic_jammer_options' ) === false ) {
-		add_option( 'wp_traffic_jammer_options' );
+		add_option(
+			'wp_traffic_jammer_options',
+			array(
+				'log_retention' => 3,
+			)
+		);
 	}
 
 	if ( get_option( ' wp_traffic_jammer_blocklist' ) === false ) {
@@ -112,8 +117,8 @@ register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
 function trafficjammer_cron_exec() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
-
-	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL 1 DAY );' );
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL' . $settting_option['log_retention'] . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 
@@ -323,6 +328,21 @@ function trafficjammer_admin_init() {
 		'wp_traffic_jammer_whitelist_section'   // section.
 	);
 
+	add_settings_section(
+		'trafficjammer_settings_section',
+		__( 'Settings' ),
+		null,
+		'wp_traffic_jammer'
+	);
+
+	add_settings_field(
+		'trafficjammer_settings_log_retention',
+		__( 'Log Retention' ),
+		'trafficjammer_log_retention_field',
+		'wp_traffic_jammer',
+		'trafficjammer_settings_section'
+	);
+
 	register_setting(
 		'wp_traffic_jammer_blocklist', // option group.
 		'wp_traffic_jammer_blocklist',  // option name.
@@ -336,6 +356,16 @@ function trafficjammer_admin_init() {
 	register_setting(
 		'wp_traffic_jammer_whitelist', // option group.
 		'wp_traffic_jammer_whitelist', // option name.
+	);
+
+	register_setting(
+		'wp_traffic_jammer_whitelist', // option group.
+		'wp_traffic_jammer_whitelist', // option name.
+	);
+
+	register_setting(
+		'wp_traffic_jammer_options',
+		'wp_traffic_jammer_options'
 	);
 
 	wp_enqueue_script( 'jquery-ui-tabs' );
@@ -376,7 +406,26 @@ function trafficjammer_whitelist() {
 	echo '<br/>';
 	echo '<small>Separated by comma (,)</small>';
 }
-
+/**
+ * Log Retention Field Callback
+ *
+ * @return void
+ */
+function trafficjammer_log_retention_field() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	echo '<select name="wp_traffic_jammer_options[log_retention]">';
+	echo '<option value="3" ';
+	if ( $setting_options['log_retention'] == 3 ) {
+		echo 'SELECTED';
+	}
+	echo '>3 days</option>';
+	echo '<option value="7"';
+	if ( $setting_options['log_retention'] == 7 ) {
+		echo 'SELECTED';
+	}
+	echo '>7 days</option>';
+	echo '</select>';
+}
 /**
  * Santize Server Variables
  *

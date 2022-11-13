@@ -95,10 +95,11 @@ function trafficjammer_deactivate() {
 	// table name.
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	// cleanup.
-	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
 
 	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
 	remove_action( 'init', 'trafficjammer_traffic_live' );
+
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
 
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );

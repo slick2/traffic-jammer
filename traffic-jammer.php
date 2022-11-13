@@ -72,6 +72,9 @@ function trafficjammer_activate() {
 
 	add_option( 'trafficjammer_db_version', $trafficjammer_db_version );
 
+	if ( ! wp_next_scheduled( 'trafficjammer_cron_hook' ) ) {
+		wp_schedule_event( time(), 'hourly', 'trafficjammer_cron_hook' );
+	}
 
 }
 register_activation_hook( __FILE__, 'trafficjammer_activate' );
@@ -83,7 +86,7 @@ register_activation_hook( __FILE__, 'trafficjammer_activate' );
  */
 function trafficjammer_deactivate() {
 	global $wpdb;
-	/**
+	/** 
 	delete_option( 'wp_traffic_jammer_options' );
 	delete_option( 'wp_traffic_jammer_blocklist' );
 	delete_option( 'wp_traffic_jammer_whitelist' );
@@ -94,8 +97,25 @@ function trafficjammer_deactivate() {
 	// cleanup.
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
 
+	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
+
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
+
+add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
+
+/**
+ * Scheduled Task to Trim Database
+ *
+ * @return void
+ */
+function trafficjammer_cron_exec() {
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE date < DATE_SUB( NOW(), INTERVAL 1 DAY )', $table_name ) );
+}
+add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 
 
 /**

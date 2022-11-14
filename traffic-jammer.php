@@ -59,7 +59,7 @@ function trafficjammer_activate() {
 	$trafficjammer_db_version = '1.0.3';
 	$collate_charset = $wpdb->get_charset_collate();
 	// Define the table for traffic logs.
-	$sql = "CREATE TABLE $table_name (
+	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`IP` varchar(45) DEFAULT NULL,
 		`user_agent` varchar(255) DEFAULT NULL,
@@ -104,7 +104,7 @@ function trafficjammer_deactivate() {
 	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
 	remove_action( 'init', 'trafficjammer_traffic_live' );
 
-	$wpdb->query( 'DROP TABLE IF EXISTS ' . $table_name );
+	$wpdb->query( 'TRUNCATE TABLE ' . $table_name );
 
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );

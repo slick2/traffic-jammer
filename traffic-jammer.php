@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.4
+ * Version:             1.0.5
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -71,7 +71,7 @@ function trafficjammer_activate() {
 		UNIQUE KEY `id_UNIQUE` (`id`)
 	  ) ENGINE=InnoDB $collate_charset;";
 
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	dbDelta( $sql );
 
@@ -131,6 +131,13 @@ add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
  */
 function trafficjammer_traffic_live() {
 	global $wpdb, $cef6d44b_server;
+
+	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
+
+	if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
+		header( 'HTTP/1.0 403 Forbidden' );
+		exit();
+	}
 
 	$wpdb->insert(
 		$wpdb->prefix . 'trafficjammer_traffic',
@@ -344,6 +351,13 @@ function trafficjammer_admin_init() {
 		'trafficjammer_settings_section'
 	);
 
+	add_settings_field(
+		'trafficjammer_settings_qs_busting',
+		__( 'Block query pattern' ),
+		'trafficjammer_qs_busting_field',
+		'wp_traffic_jammer',
+		'trafficjammer_settings_section'
+	);
 	register_setting(
 		'wp_traffic_jammer_blocklist', // option group.
 		'wp_traffic_jammer_blocklist',  // option name.
@@ -427,6 +441,19 @@ function trafficjammer_log_retention_field() {
 	}
 	echo '>7 days</option>';
 	echo '</select>';
+}
+/**
+ * Query string busting
+ *
+ * @return void
+ */
+function trafficjammer_qs_busting_field() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	echo '<input type="checkbox" value="qs_stamp" name="wp_trffic_jammer_options[qs_stamp]"> <code>/?{timestamp}</code>';
+	echo '<br>';
+	echo '<br>';
+	echo 'Cache busting execesive request, example: <code>/?1234567890</code> ';
+
 }
 /**
  * Santize Server Variables

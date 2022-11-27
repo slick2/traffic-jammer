@@ -38,6 +38,10 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 
 
 == Changelog ==
+= 1.0.4 =
+* added schedule event for log trimming
+* added setting for log retention
+
 = 1.0.3 =
 * added database version log for future updates
 

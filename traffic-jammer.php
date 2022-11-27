@@ -131,12 +131,15 @@ add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
  */
 function trafficjammer_traffic_live() {
 	global $wpdb, $cef6d44b_server;
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
 
 	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
 
-	if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
-		header( 'HTTP/1.0 403 Forbidden' );
-		exit();
+	if( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
+		if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
+			header( 'HTTP/1.0 403 Forbidden' );
+			exit();
+		}
 	}
 
 	$wpdb->insert(
@@ -358,6 +361,7 @@ function trafficjammer_admin_init() {
 		'wp_traffic_jammer',
 		'trafficjammer_settings_section'
 	);
+
 	register_setting(
 		'wp_traffic_jammer_blocklist', // option group.
 		'wp_traffic_jammer_blocklist',  // option name.
@@ -366,11 +370,6 @@ function trafficjammer_admin_init() {
 	register_setting(
 		'wp_traffic_jammer_user_agents', // option group.
 		'wp_traffic_jammer_user_agents', // option name.
-	);
-
-	register_setting(
-		'wp_traffic_jammer_whitelist', // option group.
-		'wp_traffic_jammer_whitelist', // option name.
 	);
 
 	register_setting(
@@ -449,10 +448,14 @@ function trafficjammer_log_retention_field() {
  */
 function trafficjammer_qs_busting_field() {
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	echo '<input type="checkbox" value="qs_stamp" name="wp_trffic_jammer_options[qs_stamp]"> <code>/?{timestamp}</code>';
+	echo '<input type="checkbox" value="yes" name="wp_traffic_jammer_options[qs_stamp]"';
+	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] == 'yes' ) {
+		echo 'checked';
+	}
+	echo '> <code>/?{timestamp}</code>';
 	echo '<br>';
 	echo '<br>';
-	echo 'Cache busting execesive request, example: <code>/?1234567890</code> ';
+	echo 'Block execesive request, example: <code>/?1234567890</code> ';
 
 }
 /**

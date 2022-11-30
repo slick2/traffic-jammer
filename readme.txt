@@ -38,6 +38,9 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 
 
 == Changelog ==
+= 1.0.5 =
+* blocking query with timestamps
+
 = 1.0.4 =
 * added schedule event for log trimming
 * added setting for log retention

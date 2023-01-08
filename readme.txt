@@ -39,7 +39,7 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 
 == Changelog ==
 = 1.0.5 =
-* blocking query with timestamps
+* added blocking for cache busting URL query strings
 
 = 1.0.4 =
 * added schedule event for log trimming

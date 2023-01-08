@@ -155,6 +155,46 @@ function trafficjammer_traffic_live() {
 }
 add_action( 'init', 'trafficjammer_traffic_live' );
 
+/**
+ * Record failed login attempt
+ *
+ * @param array $username callback to show username.
+ * @return void
+ */
+function trafficjammer_login_failed( $username ) {
+	global $wpdb, $cef6d44b_server;
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+
+	if ( isset( $setting_options['login_attempts'] ) ) {
+		$num_tries = $setting_options['login_attempts'];
+	} else {
+		$num_tries = 5;
+	}
+
+	if( $num_tries == 0 ) {
+		return;
+	}
+
+	$ip = $cef6d44b_server['REMOTE_ADDR'];
+
+	$wpdb->insert(
+		$wpdb->prefix . 'trafficjammer_traffic',
+		array(
+			'IP'         => $ip,
+			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
+			'status'     => 'failed_login',
+			'request'    => $cef6d44b_server['REQUEST_URI'],
+			'ref'        => $cef6d44b_server['HTTP_REFERER'],
+		)
+	);
+	$todays_date = date( 'Y-m-d', time() );
+	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
+	$result = $wpdb->get_row( $wpdb->prepare( $sql ) );
+	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
+		trafficjammer_block_ip( $ip );
+	}
+}
+add_action( 'wp_login_failed', 'trafficjammer_login_failed' );
 
 /**
  * Limit IP
@@ -355,6 +395,14 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_field(
+		'trafficjammer_settings_login_attempts',
+		__( 'Limit login attempts' ),
+		'trafficjammer_login_attempts',
+		'wp_traffic_jammer',
+		'trafficjammer_settings_section'
+	);
+
+	add_settings_field(
 		'trafficjammer_settings_qs_busting',
 		__( 'Block query pattern' ),
 		'trafficjammer_qs_busting_field',
@@ -458,6 +506,23 @@ function trafficjammer_qs_busting_field() {
 	echo 'Block execesive request, example: <code>/?1234567890</code> ';
 
 }
+/**
+ * Block failed login attempts
+ *
+ * @return void
+ */
+function trafficjammer_login_attempts() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	echo '<input type="text" name="wp_traffic_jammer_options[login_attempts]" size="3"';
+	if ( isset( $setting_options['login_attempts'] ) ) {
+		echo ' value="' . esc_attr( $setting_options['login_attempts'] ) . '"';
+	} else {
+		echo ' value="5" ';
+	}
+	echo '/>';
+	echo '<br>';
+}
+
 /**
  * Santize Server Variables
  *

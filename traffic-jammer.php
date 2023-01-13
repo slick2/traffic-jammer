@@ -403,6 +403,14 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_field(
+		'trafficjammer_settings_abusipdb_key',
+		__( 'AbuseIPDB' ),
+		'trafficjammer_abuseipdb_key',
+		'wp_traffic_jammer',
+		'trafficjammer_settings_section'
+	);
+
+	add_settings_field(
 		'trafficjammer_settings_qs_busting',
 		__( 'Block query pattern' ),
 		'trafficjammer_qs_busting_field',
@@ -502,7 +510,6 @@ function trafficjammer_qs_busting_field() {
 	}
 	echo '> <code>/?{timestamp}</code>';
 	echo '<br>';
-	echo '<br>';
 	echo 'Block execesive request, example: <code>/?1234567890</code> ';
 
 }
@@ -521,7 +528,27 @@ function trafficjammer_login_attempts() {
 	}
 	echo '/>';
 	echo '<br>';
+	echo 'Automatically block IPs based on failed login attempts.';
 }
+
+/**
+ * AbuseIPDB API
+ *
+ * @return void
+ */
+function trafficjammer_abuseipdb_key() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	echo '<input type="text" name="wp_traffic_jammer_options[abuseipdb_key]" size="50" ';
+	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+		echo ' value="' . esc_attr( $setting_options['abuseipdb_key'] ) . '"';
+	}
+	echo '/>';
+	echo '<br>';
+	echo 'Automatically block IPs with 100% abuse score.';
+	echo '<br>';
+}
+
+
 
 /**
  * Santize Server Variables

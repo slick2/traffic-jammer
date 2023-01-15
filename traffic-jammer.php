@@ -189,7 +189,10 @@ add_action( 'init', 'trafficjammer_traffic_live' );
 function trafficjammer_login_failed( $username ) {
 	global $wpdb, $cef6d44b_server;
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
+	// Check settings for the threshold.
 	if ( isset( $setting_options['login_attempts'] ) ) {
 		$num_tries = $setting_options['login_attempts'];
 	} else {
@@ -216,7 +219,10 @@ function trafficjammer_login_failed( $username ) {
 	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
 	$result = $wpdb->get_row( $wpdb->prepare( $sql ) );
 	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
-		trafficjammer_block_ip( $ip );
+		// We don't want duplicate values on the blocklist.
+		if ( ! trafficjammer_check_ip( $ip, $blocklist ) ) {
+			trafficjammer_block_ip( $ip );
+		}
 	}
 }
 add_action( 'wp_login_failed', 'trafficjammer_login_failed' );

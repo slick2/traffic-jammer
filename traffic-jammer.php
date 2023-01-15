@@ -118,28 +118,35 @@ function trafficjammer_cron_exec() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
-	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
-	$abuse = new Traffic_Jammer_AbuseIPDB();
 
-	// Check first the top ip before truncating the logs
-	// Query the top 10 ip.
-	$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
-	foreach ( $traffic_logs as $value ) {
-		// skip if it is in the blocklist.
-		if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) {
-			continue;
-		}
-		$abuse_result = $abuse->check( $value->IP );
-		if ( $abuse_result['data']['abuseConfidenceScore'] == 100 ) {
-			trafficjammer_block_ip( $value->IP );
+	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
+
+		$abuse = new Traffic_Jammer_AbuseIPDB();
+
+		// Check the top ip, add IP to blocklist with 100% confidence of abuse.
+		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
+
+		foreach ( $traffic_logs as $value ) {
+			// skip if it is in the blocklist.
+			if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) {
+				continue;
+			} else {
+				$abuse_result = $abuse->check( $value->IP );
+				if ( $abuse_result['data']['abuseConfidenceScore'] == '100' ) {
+					trafficjammer_block_ip( $value->IP );
+				}
+			}
 		}
 	}
 
+	// Cleanup Logs.
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
 	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
+
 
 
 /**

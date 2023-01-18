@@ -575,7 +575,7 @@ function trafficjammer_abuseipdb_key() {
 	}
 	echo '/>';
 	echo '<br>';
-	echo 'Automatically block IPs with 100% abuse score.';
+	echo 'Block execessive hits from IPs with 100% abuse score.';
 	echo '<br>';
 }
 

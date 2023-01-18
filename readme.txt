@@ -38,6 +38,9 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 
 
 == Changelog ==
+= 1.0.7 =
+* added AbuseIPDB feature to block malicious traffic 
+
 = 1.0.6 =
 * added feature to automatically block IPs which have failed login
 * option to limit the number of retries of failed login before it would be blocked

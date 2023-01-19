@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.6
+ * Version:             1.0.7
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -118,10 +118,35 @@ function trafficjammer_cron_exec() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+
+	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
+
+		$abuse = new Traffic_Jammer_AbuseIPDB();
+
+		// Check the top ip, add IP to blocklist with 100% confidence of abuse.
+		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
+
+		foreach ( $traffic_logs as $value ) {
+			// skip if it is in the blocklist.
+			if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) {
+				continue;
+			} else {
+				$abuse_result = $abuse->check( $value->IP );
+				if ( $abuse_result['data']['abuseConfidenceScore'] == '100' ) {
+					trafficjammer_block_ip( $value->IP );
+				}
+			}
+		}
+	}
+
+	// Cleanup Logs.
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
 	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
+
 
 
 /**
@@ -164,7 +189,10 @@ add_action( 'init', 'trafficjammer_traffic_live' );
 function trafficjammer_login_failed( $username ) {
 	global $wpdb, $cef6d44b_server;
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
+	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
+	// Check settings for the threshold.
 	if ( isset( $setting_options['login_attempts'] ) ) {
 		$num_tries = $setting_options['login_attempts'];
 	} else {
@@ -191,7 +219,10 @@ function trafficjammer_login_failed( $username ) {
 	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
 	$result = $wpdb->get_row( $wpdb->prepare( $sql ) );
 	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
-		trafficjammer_block_ip( $ip );
+		// We don't want duplicate values on the blocklist.
+		if ( ! trafficjammer_check_ip( $ip, $blocklist ) ) {
+			trafficjammer_block_ip( $ip );
+		}
 	}
 }
 add_action( 'wp_login_failed', 'trafficjammer_login_failed' );
@@ -403,6 +434,14 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_field(
+		'trafficjammer_settings_abusipdb_key',
+		__( 'AbuseIPDB' ),
+		'trafficjammer_abuseipdb_key',
+		'wp_traffic_jammer',
+		'trafficjammer_settings_section'
+	);
+
+	add_settings_field(
 		'trafficjammer_settings_qs_busting',
 		__( 'Block query pattern' ),
 		'trafficjammer_qs_busting_field',
@@ -502,7 +541,6 @@ function trafficjammer_qs_busting_field() {
 	}
 	echo '> <code>/?{timestamp}</code>';
 	echo '<br>';
-	echo '<br>';
 	echo 'Block execesive request, example: <code>/?1234567890</code> ';
 
 }
@@ -521,7 +559,27 @@ function trafficjammer_login_attempts() {
 	}
 	echo '/>';
 	echo '<br>';
+	echo 'Automatically block IPs based on failed login attempts.';
 }
+
+/**
+ * AbuseIPDB API
+ *
+ * @return void
+ */
+function trafficjammer_abuseipdb_key() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	echo '<input type="text" name="wp_traffic_jammer_options[abuseipdb_key]" size="50" ';
+	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+		echo ' value="' . esc_attr( $setting_options['abuseipdb_key'] ) . '"';
+	}
+	echo '/>';
+	echo '<br>';
+	echo 'Block execessive hits from IPs with 100% abuse score.';
+	echo '<br>';
+}
+
+
 
 /**
  * Santize Server Variables
@@ -538,7 +596,7 @@ function trafficjammer_server_var( $server ) {
 /**
  * Block IP
  *
- * @param string $ip value ot add.
+ * @param string $ip value to add.
  *
  * @return void
  */
@@ -661,3 +719,4 @@ function trafficjammer_check_ip( $ip, $ip_haystack ) {
 
 // include wp-cli file.
 require plugin_dir_path( __FILE__ ) . 'includes/class-wp-traffic-jammer-cli.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-trafficjammer-abuseipdb.php';

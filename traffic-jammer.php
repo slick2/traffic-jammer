@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.7
+ * Version:             1.0.8
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -303,6 +303,8 @@ function trafficjammer_limit_user_agents() {
 }
 add_action( 'init', 'trafficjammer_limit_user_agents' );
 
+// Admin Dashboard.
+
 /**
  *
  * Add menu page
@@ -411,6 +413,21 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_section(
+		'trafficjammer_abuseipdb_section',
+		__( 'AbuseIPDB' ),
+		null,
+		'wp_traffic_jammer'
+	);
+
+	add_settings_field(
+		'trafficjammer_abuseipdb_key',
+		__( 'AbuseIPDB' ),
+		'trafficjammer_abuseipdb_key',
+		'wp_traffic_jammer',
+		'trafficjammer_abuseipdb_section'
+	);
+
+	add_settings_section(
 		'trafficjammer_settings_section',
 		__( 'Settings' ),
 		null,
@@ -429,14 +446,6 @@ function trafficjammer_admin_init() {
 		'trafficjammer_settings_login_attempts',
 		__( 'Limit login attempts' ),
 		'trafficjammer_login_attempts',
-		'wp_traffic_jammer',
-		'trafficjammer_settings_section'
-	);
-
-	add_settings_field(
-		'trafficjammer_settings_abusipdb_key',
-		__( 'AbuseIPDB' ),
-		'trafficjammer_abuseipdb_key',
 		'wp_traffic_jammer',
 		'trafficjammer_settings_section'
 	);
@@ -462,6 +471,11 @@ function trafficjammer_admin_init() {
 	register_setting(
 		'wp_traffic_jammer_whitelist', // option group.
 		'wp_traffic_jammer_whitelist', // option name.
+	);
+
+	register_setting(
+		'wp_traffic_jammer_abuseipdb', // option group.
+		'wp_traffic_jammer_abuseipdb', // option name.
 	);
 
 	register_setting(
@@ -580,6 +594,7 @@ function trafficjammer_abuseipdb_key() {
 }
 
 
+// Internal Functions.
 
 /**
  * Santize Server Variables

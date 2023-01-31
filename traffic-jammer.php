@@ -134,7 +134,7 @@ function trafficjammer_cron_exec() {
 				continue;
 			} else {
 				$abuse_result = $abuse->check( $value->IP );
-				if ( $abuse_result['data']['abuseConfidenceScore'] == '100' ) {
+				if ( (int) $abuse_result['data']['abuseConfidenceScore'] >= $threshold ) {
 					trafficjammer_block_ip( $value->IP );
 				}
 			}
@@ -420,9 +420,17 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_field(
-		'trafficjammer_abuseipdb_key',
+		'trafficjammer_settings_abuseipdb_key',
 		__( 'AbuseIPDB' ),
 		'trafficjammer_abuseipdb_key',
+		'wp_traffic_jammer',
+		'trafficjammer_abuseipdb_section'
+	);
+
+	add_settings_field(
+		'trafficjammer_settings_abuse_threshold',
+		__( 'Abuse Threshold Score' ),
+		'trafficjammer_abuse_threshold',
 		'wp_traffic_jammer',
 		'trafficjammer_abuseipdb_section'
 	);
@@ -588,11 +596,33 @@ function trafficjammer_abuseipdb_key() {
 		echo ' value="' . esc_attr( $setting_options['abuseipdb_key'] ) . '"';
 	}
 	echo '/>';
-	echo '<br>';
-	echo 'Block execessive hits from IPs with 100% abuse score.';
-	echo '<br>';
+	echo '<br/>';
+	echo '<p>Get API key from <a href="https://www.abuseipdb.com/" target="blank">https://www.abuseipdb.com/</a></p>';
 }
 
+/** Abuse Treshold
+ *
+ * @return void
+ */
+function trafficjammer_abuse_threshold() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
+		$threshold = $setting_options['abuseipdb_threshold'];
+	} else {
+		$threshold = 100;
+	}
+	echo '<select name="wp_traffic_jammer_options[abuseipdb_threshold]">';
+	for ( $i = 70; $i <= 100; $i = $i + 10 ) {
+		echo '<option value="' . esc_html( $i ) . '"';
+		if ( $threshold == $i ) {
+			echo ' selected ';
+		}
+		echo '>' . esc_html( $i ) . '</option>';
+	}
+	echo '</select>';
+	echo '<br />';
+	echo '<p>Minimum abuse score</p>';
+}
 
 // Internal Functions.
 

@@ -76,7 +76,7 @@ if ( ! empty( $_GET['tab'] ) ) {
 	if ( 'abuseipdb' === $cef6d44b_tab ) {
 		?>
 			<form action="options.php" method="post" class="form-table">	
-			<?php settings_fields( 'wp_traffic_jammer_abuseipdb' ); ?>
+			<?php settings_fields( 'wp_traffic_jammer_options' ); ?>
 			<table>
 				<?php do_settings_fields( 'wp_traffic_jammer', 'trafficjammer_abuseipdb_section' ); ?>			
 			</table>

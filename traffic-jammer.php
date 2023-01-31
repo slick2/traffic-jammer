@@ -119,13 +119,21 @@ function trafficjammer_cron_exec() {
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
 
+	// Check for Threshold.
+	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
+		$threshold = $setting_options['abuseipdb_threshold'];
+	} else {
+		$threshold = 100;
+	}
+
+	// Check if there is AbuseIPDB API key.
 	if ( isset( $setting_options['abuseipdb_key'] ) ) {
 		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
 		$abuse = new Traffic_Jammer_AbuseIPDB();
 
-		// Check the top ip, add IP to blocklist with 100% confidence of abuse.
+		// Check the top ip, add IP to blocklist with threshold confidence of abuse.
 		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
 
 		foreach ( $traffic_logs as $value ) {

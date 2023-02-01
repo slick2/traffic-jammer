@@ -43,6 +43,10 @@ The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon
 
 
 == Changelog ==
+= 1.0.8 =
+* Settings for AbuseIPDB has a separate tab
+* Added threshold field for minimal abuse score
+
 = 1.0.7 =
 * added AbuseIPDB feature to block malicious traffic 
 

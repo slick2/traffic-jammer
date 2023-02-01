@@ -55,13 +55,33 @@ class Traffic_Jammer_AbuseIPDB {
 	}
 	/**
 	 * Verify API key
+	 * We send a simple request to verify if the key is working or not
 	 *
 	 * @param string $key API key.
 	 * @return bool would return true or false.
 	 */
-	public static function verify( $key ) {
+	public static function verify_key( $key ) {
+		$response = wp_remote_request(
+			$this->base_url . 'blacklist?limit=' . 1,
+			array(
+				'method'  => 'GET',
+				'headers' => array(
+					'Accept' => 'application/json',
+					'Key'    => $this->api,
+				),
+			)
+		);
 
-		return true;
+		if ( $response ) {
+			$data = json_decode( $response, true );
+			if ( isset( $data['errors'] ) ) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

@@ -19,6 +19,7 @@ if ( ! empty( $_GET['tab'] ) ) {
 		<a href="?page=wp_traffic_jammer&tab=blockip" class="nav-tab <?php echo $cef6d44b_tab == 'blockip' ? 'nav-tab-active' : '';  ?>" >Block IP</a>
 		<a href="?page=wp_traffic_jammer&tab=blockbot" class="nav-tab <?php echo $cef6d44b_tab == 'blockbot' ? 'nav-tab-active' : '';  ?>">Block Bots</a>
 		<a href="?page=wp_traffic_jammer&tab=allowip" class="nav-tab <?php echo $cef6d44b_tab == 'allowip' ? 'nav-tab-active' : ''; ?>">Whitelist IP</a>
+		<a href="?page=wp_traffic_jammer&tab=abuseipdb" class="nav-tab <?php echo $cef6d44b_tab == 'abuseipdb' ? 'nav-tab-active' : ''; ?>">AbuseIPDB</a>
 		<a href="?page=wp_traffic_jammer&tab=settings" class="nav-tab <?php echo $cef6d44b_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
 	</nav>
 	<div class="tabs-content">
@@ -63,6 +64,21 @@ if ( ! empty( $_GET['tab'] ) ) {
 			<?php settings_fields( 'wp_traffic_jammer_blocklist' ); ?>
 			<table>
 				<?php do_settings_fields( 'wp_traffic_jammer', 'wp_traffic_jammer_blocklist_section' ); ?>			
+			</table>
+			<p class="submit">                    
+			<input name="Submit" type="submit" value="Save Changes" class='button-primary' />
+			</p>
+			</form>
+		<?php
+	}
+	?>
+	<?php
+	if ( 'abuseipdb' === $cef6d44b_tab ) {
+		?>
+			<form action="options.php" method="post" class="form-table">	
+			<?php settings_fields( 'wp_traffic_jammer_options' ); ?>
+			<table>
+				<?php do_settings_fields( 'wp_traffic_jammer', 'trafficjammer_abuseipdb_section' ); ?>			
 			</table>
 			<p class="submit">                    
 			<input name="Submit" type="submit" value="Save Changes" class='button-primary' />

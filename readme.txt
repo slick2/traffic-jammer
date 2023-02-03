@@ -4,12 +4,12 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
 Tested up to: 6.1
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress plugin to block IP and bots that causes malicious traffic
+WordPress plugin that automatically blocks top IP visits which are reportedly malicious.  Protects the login area by limiting access and blocking failed login attempts.  It prevents spamming bots that cause traffic overages.
 
 == Description ==
 
@@ -27,6 +27,11 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 - wp jam block 127.0.0.10
 - wp jam unblock 127.0.0.10
 
+The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon.io</a> and no additional symlinks required.
+
+<h4>Pantheon terminus command</h4>
+- terminus wp sitename.env -- jam block 127.0.0.1
+- terminus wp sitename.env -- jam unblock 127.0.0.1
 
 == Installation ===
 
@@ -38,6 +43,10 @@ Note: Previous installations less than version 1.0.3 need to be reinstalled for 
 
 
 == Changelog ==
+= 1.0.8 =
+* Settings for AbuseIPDB has a separate tab
+* Added threshold field for minimal abuse score
+
 = 1.0.7 =
 * added AbuseIPDB feature to block malicious traffic 
 

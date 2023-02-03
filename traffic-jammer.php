@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.7
+ * Version:             1.0.8
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -119,13 +119,21 @@ function trafficjammer_cron_exec() {
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
 
+	// Check for Threshold.
+	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
+		$threshold = $setting_options['abuseipdb_threshold'];
+	} else {
+		$threshold = 100;
+	}
+
+	// Check if there is AbuseIPDB API key.
 	if ( isset( $setting_options['abuseipdb_key'] ) ) {
 		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
 		$abuse = new Traffic_Jammer_AbuseIPDB();
 
-		// Check the top ip, add IP to blocklist with 100% confidence of abuse.
+		// Check the top ip, add IP to blocklist with threshold confidence of abuse.
 		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
 
 		foreach ( $traffic_logs as $value ) {
@@ -134,7 +142,7 @@ function trafficjammer_cron_exec() {
 				continue;
 			} else {
 				$abuse_result = $abuse->check( $value->IP );
-				if ( $abuse_result['data']['abuseConfidenceScore'] == '100' ) {
+				if ( (int) $abuse_result['data']['abuseConfidenceScore'] >= $threshold ) {
 					trafficjammer_block_ip( $value->IP );
 				}
 			}
@@ -303,6 +311,8 @@ function trafficjammer_limit_user_agents() {
 }
 add_action( 'init', 'trafficjammer_limit_user_agents' );
 
+// Admin Dashboard.
+
 /**
  *
  * Add menu page
@@ -411,6 +421,29 @@ function trafficjammer_admin_init() {
 	);
 
 	add_settings_section(
+		'trafficjammer_abuseipdb_section',
+		__( 'AbuseIPDB' ),
+		null,
+		'wp_traffic_jammer'
+	);
+
+	add_settings_field(
+		'trafficjammer_settings_abuseipdb_key',
+		__( 'AbuseIPDB' ),
+		'trafficjammer_abuseipdb_key',
+		'wp_traffic_jammer',
+		'trafficjammer_abuseipdb_section'
+	);
+
+	add_settings_field(
+		'trafficjammer_settings_abuse_threshold',
+		__( 'Abuse Threshold Score' ),
+		'trafficjammer_abuse_threshold',
+		'wp_traffic_jammer',
+		'trafficjammer_abuseipdb_section'
+	);
+
+	add_settings_section(
 		'trafficjammer_settings_section',
 		__( 'Settings' ),
 		null,
@@ -429,14 +462,6 @@ function trafficjammer_admin_init() {
 		'trafficjammer_settings_login_attempts',
 		__( 'Limit login attempts' ),
 		'trafficjammer_login_attempts',
-		'wp_traffic_jammer',
-		'trafficjammer_settings_section'
-	);
-
-	add_settings_field(
-		'trafficjammer_settings_abusipdb_key',
-		__( 'AbuseIPDB' ),
-		'trafficjammer_abuseipdb_key',
 		'wp_traffic_jammer',
 		'trafficjammer_settings_section'
 	);
@@ -462,6 +487,11 @@ function trafficjammer_admin_init() {
 	register_setting(
 		'wp_traffic_jammer_whitelist', // option group.
 		'wp_traffic_jammer_whitelist', // option name.
+	);
+
+	register_setting(
+		'wp_traffic_jammer_abuseipdb', // option group.
+		'wp_traffic_jammer_abuseipdb', // option name.
 	);
 
 	register_setting(
@@ -574,12 +604,35 @@ function trafficjammer_abuseipdb_key() {
 		echo ' value="' . esc_attr( $setting_options['abuseipdb_key'] ) . '"';
 	}
 	echo '/>';
-	echo '<br>';
-	echo 'Block execessive hits from IPs with 100% abuse score.';
-	echo '<br>';
+	echo '<br/>';
+	echo '<p>Get API key from <a href="https://www.abuseipdb.com/" target="blank">https://www.abuseipdb.com/</a></p>';
 }
 
+/** Abuse Treshold
+ *
+ * @return void
+ */
+function trafficjammer_abuse_threshold() {
+	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
+		$threshold = $setting_options['abuseipdb_threshold'];
+	} else {
+		$threshold = 100;
+	}
+	echo '<select name="wp_traffic_jammer_options[abuseipdb_threshold]">';
+	for ( $i = 70; $i <= 100; $i = $i + 10 ) {
+		echo '<option value="' . esc_html( $i ) . '"';
+		if ( $threshold == $i ) {
+			echo ' selected ';
+		}
+		echo '>' . esc_html( $i ) . '</option>';
+	}
+	echo '</select>';
+	echo '<br />';
+	echo '<p>Minimum abuse score</p>';
+}
 
+// Internal Functions.
 
 /**
  * Santize Server Variables

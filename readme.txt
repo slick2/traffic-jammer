@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
 Requires at least: 4.7
 Tested up to: 6.1
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,7 @@ WordPress plugin that automatically blocks top IP visits which are reportedly ma
 
 == Description ==
 
-The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
+WordPress plugin to block IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
 
 - Single IP
 - Range of IP using CIDR format
@@ -39,8 +39,15 @@ The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon
 1. Upload the compress archive through the 'Plugins > Add New > Upload' screen in your WordPress dashbboard
 1. Activate the plugin through the 'Plugins' menu in WordPress 
 
+== Screenshots ==
 
-
+1. Admin UI
+2. Block Bots 
+3. Whitelist IP
+4. AbuseIPDB Integration
+5. Settings
+6. Reports - Top IP
+7. Reports - Top User Agents
 
 == Changelog ==
 = 1.0.8 =

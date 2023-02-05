@@ -103,8 +103,7 @@ function trafficjammer_deactivate() {
 
 	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
 	remove_action( 'init', 'trafficjammer_traffic_live' );
-
-	$wpdb->query( 'TRUNCATE TABLE ' . $table_name );
+	$wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %s', $table_name ) );
 
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
@@ -116,7 +115,7 @@ register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
  */
 function trafficjammer_cron_exec() {
 	global $wpdb;
-	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	$table_name      = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
 
 	// Check for Threshold.
@@ -151,7 +150,7 @@ function trafficjammer_cron_exec() {
 
 	// Cleanup Logs.
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
-	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE `date` < DATE_SUB( NOW(), INTERVAL %s DAY );', array( $table_name, $interval_day ) ) );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 
@@ -168,7 +167,7 @@ function trafficjammer_traffic_live() {
 
 	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
 
-	if( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
+	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
 		if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
 			header( 'HTTP/1.0 403 Forbidden' );
 			exit();
@@ -197,8 +196,8 @@ add_action( 'init', 'trafficjammer_traffic_live' );
 function trafficjammer_login_failed( $username ) {
 	global $wpdb, $cef6d44b_server;
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
-	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
+	$blocklist       = get_option( 'wp_traffic_jammer_blocklist' );
+	$blocklist       = array_map( 'trim', explode( ',', $blocklist ) );
 
 	// Check settings for the threshold.
 	if ( isset( $setting_options['login_attempts'] ) ) {

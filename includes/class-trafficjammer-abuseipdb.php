@@ -47,7 +47,7 @@ class Traffic_Jammer_AbuseIPDB {
 			)
 		);
 
-		if ( $response ) {
+		if ( isset( $response ) && ( ! is_wp_error( $response ) ) ) {
 			return json_decode( $response['body'], true );
 		}
 
@@ -72,7 +72,7 @@ class Traffic_Jammer_AbuseIPDB {
 			)
 		);
 
-		if ( $response ) {
+		if ( isset( $response ) && ( ! is_wp_error( $response ) ) ) {
 			$data = json_decode( $response, true );
 			if ( isset( $data['errors'] ) ) {
 				return false;

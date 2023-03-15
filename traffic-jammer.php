@@ -121,7 +121,7 @@ function trafficjammer_cron_exec() {
 
 	// Check for Threshold.
 	if ( isset( $abuseipdb['abuseipdb_threshold'] ) ) {
-		$threshold = $setting_options['abuseipdb_threshold'];
+		$threshold = $abuseipdb['abuseipdb_threshold'];
 	} else {
 		$threshold = 100;
 	}
@@ -150,8 +150,8 @@ function trafficjammer_cron_exec() {
 	}
 
 	// Cleanup Logs.
-	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
-	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ');' );
+	$interval_day = isset( $settting_options['log_retention'] ) ? $settting_options['log_retention'] : 3;
+	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 

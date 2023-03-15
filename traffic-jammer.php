@@ -117,16 +117,17 @@ function trafficjammer_cron_exec() {
 	global $wpdb;
 	$table_name      = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$abuseipdb       = get_option( 'wp_traffic_jammer_abuseipdb' );
 
 	// Check for Threshold.
-	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
+	if ( isset( $abuseipdb['abuseipdb_threshold'] ) ) {
 		$threshold = $setting_options['abuseipdb_threshold'];
 	} else {
 		$threshold = 100;
 	}
 
 	// Check if there is AbuseIPDB API key.
-	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+	if ( isset( $abuseipdb['abuseipdb_key'] ) ) {
 		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
@@ -150,7 +151,7 @@ function trafficjammer_cron_exec() {
 
 	// Cleanup Logs.
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
-	$wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE `date` < DATE_SUB( NOW(), INTERVAL %s DAY );', array( $table_name, $interval_day ) ) );
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE `date` < DATE_SUB( NOW(), INTERVAL %d DAY );', array( $table_name, $interval_day ) ) );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 

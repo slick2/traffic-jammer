@@ -24,7 +24,7 @@ class Traffic_Jammer_AbuseIPDB {
 	 * @return void
 	 */
 	public function __construct() {
-		$setting_options = get_option( 'wp_traffic_jammer_options' );
+		$setting_options = get_option( 'wp_traffic_jammer_abuseipdb' );
 		$this->api       = $setting_options['abuseipdb_key'];
 	}
 

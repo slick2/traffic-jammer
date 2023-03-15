@@ -50,6 +50,10 @@ The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.0.9 =
+* fix bug on updating abuseipdb key and options
+* added checking of error when calling abuseipdb endpoint
+
 = 1.0.8 =
 * Settings for AbuseIPDB has a separate tab
 * Added threshold field for minimal abuse score

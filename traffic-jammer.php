@@ -151,7 +151,7 @@ function trafficjammer_cron_exec() {
 
 	// Cleanup Logs.
 	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
-	$wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE `date` < DATE_SUB( NOW(), INTERVAL %d DAY );', array( $table_name, $interval_day ) ) );
+	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ');' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 

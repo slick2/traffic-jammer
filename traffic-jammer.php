@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.8
+ * Version:             1.0.9
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -103,8 +103,7 @@ function trafficjammer_deactivate() {
 
 	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
 	remove_action( 'init', 'trafficjammer_traffic_live' );
-
-	$wpdb->query( 'TRUNCATE TABLE ' . $table_name );
+	$wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %s', $table_name ) );
 
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
@@ -116,18 +115,19 @@ register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
  */
 function trafficjammer_cron_exec() {
 	global $wpdb;
-	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	$table_name      = $wpdb->prefix . 'trafficjammer_traffic';
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$abuseipdb       = get_option( 'wp_traffic_jammer_abuseipdb' );
 
 	// Check for Threshold.
-	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
-		$threshold = $setting_options['abuseipdb_threshold'];
+	if ( isset( $abuseipdb['abuseipdb_threshold'] ) ) {
+		$threshold = $abuseipdb['abuseipdb_threshold'];
 	} else {
 		$threshold = 100;
 	}
 
 	// Check if there is AbuseIPDB API key.
-	if ( isset( $setting_options['abuseipdb_key'] ) ) {
+	if ( isset( $abuseipdb['abuseipdb_key'] ) ) {
 		$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 		$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
 
@@ -150,7 +150,7 @@ function trafficjammer_cron_exec() {
 	}
 
 	// Cleanup Logs.
-	$interval_day = isset( $settting_option['log_retention'] ) ? $settting_option['log_retention'] : 3;
+	$interval_day = isset( $settting_options['log_retention'] ) ? $settting_options['log_retention'] : 3;
 	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
@@ -168,7 +168,7 @@ function trafficjammer_traffic_live() {
 
 	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
 
-	if( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
+	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
 		if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
 			header( 'HTTP/1.0 403 Forbidden' );
 			exit();
@@ -197,8 +197,8 @@ add_action( 'init', 'trafficjammer_traffic_live' );
 function trafficjammer_login_failed( $username ) {
 	global $wpdb, $cef6d44b_server;
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
-	$blocklist = array_map( 'trim', explode( ',', $blocklist ) );
+	$blocklist       = get_option( 'wp_traffic_jammer_blocklist' );
+	$blocklist       = array_map( 'trim', explode( ',', $blocklist ) );
 
 	// Check settings for the threshold.
 	if ( isset( $setting_options['login_attempts'] ) ) {
@@ -490,15 +490,14 @@ function trafficjammer_admin_init() {
 	);
 
 	register_setting(
-		'wp_traffic_jammer_abuseipdb', // option group.
-		'wp_traffic_jammer_abuseipdb', // option name.
+		'wp_traffic_jammer_options', // option group.
+		'wp_traffic_jammer_options', // option name.
 	);
 
 	register_setting(
-		'wp_traffic_jammer_options',
-		'wp_traffic_jammer_options'
+		'wp_traffic_jammer_abuseipdb',
+		'wp_traffic_jammer_abuseipdb'
 	);
-
 	wp_enqueue_script( 'jquery-ui-tabs' );
 
 }
@@ -598,8 +597,8 @@ function trafficjammer_login_attempts() {
  * @return void
  */
 function trafficjammer_abuseipdb_key() {
-	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	echo '<input type="text" name="wp_traffic_jammer_options[abuseipdb_key]" size="50" ';
+	$setting_options = get_option( 'wp_traffic_jammer_abuseipdb' );
+	echo '<input type="text" name="wp_traffic_jammer_abuseipdb[abuseipdb_key]" size="50" ';
 	if ( isset( $setting_options['abuseipdb_key'] ) ) {
 		echo ' value="' . esc_attr( $setting_options['abuseipdb_key'] ) . '"';
 	}
@@ -613,13 +612,13 @@ function trafficjammer_abuseipdb_key() {
  * @return void
  */
 function trafficjammer_abuse_threshold() {
-	$setting_options = get_option( 'wp_traffic_jammer_options' );
+	$setting_options = get_option( 'wp_traffic_jammer_abuseipdb' );
 	if ( isset( $setting_options['abuseipdb_threshold'] ) ) {
 		$threshold = $setting_options['abuseipdb_threshold'];
 	} else {
 		$threshold = 100;
 	}
-	echo '<select name="wp_traffic_jammer_options[abuseipdb_threshold]">';
+	echo '<select name="wp_traffic_jammer_abuseipdb[abuseipdb_threshold]">';
 	for ( $i = 70; $i <= 100; $i = $i + 10 ) {
 		echo '<option value="' . esc_html( $i ) . '"';
 		if ( $threshold == $i ) {

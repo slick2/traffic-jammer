@@ -24,7 +24,7 @@ class Traffic_Jammer_AbuseIPDB {
 	 * @return void
 	 */
 	public function __construct() {
-		$setting_options = get_option( 'wp_traffic_jammer_options' );
+		$setting_options = get_option( 'wp_traffic_jammer_abuseipdb' );
 		$this->api       = $setting_options['abuseipdb_key'];
 	}
 
@@ -47,7 +47,7 @@ class Traffic_Jammer_AbuseIPDB {
 			)
 		);
 
-		if ( $response ) {
+		if ( isset( $response ) && ( ! is_wp_error( $response ) ) ) {
 			return json_decode( $response['body'], true );
 		}
 
@@ -72,7 +72,7 @@ class Traffic_Jammer_AbuseIPDB {
 			)
 		);
 
-		if ( $response ) {
+		if ( isset( $response ) && ( ! is_wp_error( $response ) ) ) {
 			$data = json_decode( $response, true );
 			if ( isset( $data['errors'] ) ) {
 				return false;

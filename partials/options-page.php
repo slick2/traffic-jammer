@@ -25,6 +25,11 @@ if ( ! empty( $_GET['tab'] ) ) {
 	<div class="tabs-content">
 
 	<?php
+	if ( isset( $_GET['settings-updated'] ) && empty( get_settings_errors( 'trafficjammer_messages' ) ) ) {
+		// add settings saved message with the class of "updated".
+		add_settings_error( 'trafficjammer_messages', 'trafficjammer_message', __( 'Settings Saved', 'wp_traffic_jammer' ), 'updated' );
+	}
+	settings_errors( 'trafficjammer_messages' );
 	if ( 'blockbot' === $cef6d44b_tab ) {
 		?>
 		<form action="options.php" method="post" class="form-table">	
@@ -76,7 +81,8 @@ if ( ! empty( $_GET['tab'] ) ) {
 	if ( 'abuseipdb' === $cef6d44b_tab ) {
 		?>
 			<form action="options.php" method="post" class="form-table">	
-			<?php settings_fields( 'wp_traffic_jammer_options' ); ?>
+			<?php settings_fields( 'wp_traffic_jammer_abuseipdb' ); ?>
+			
 			<table>
 				<?php do_settings_fields( 'wp_traffic_jammer', 'trafficjammer_abuseipdb_section' ); ?>			
 			</table>

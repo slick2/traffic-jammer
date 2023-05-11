@@ -20,6 +20,10 @@
 
 /** Sanitize server variables */
 $cef6d44b_server = array_map( 'trafficjammer_server_var', $_SERVER );
+// real visitor IP address when using Cloudflare proxy.
+if ( ! empty( $cef6d44b_server['HTTP_CF_CONNECTING_IP'] ) ) {
+	$cef6d44b_server['REMOTE_ADDR'] = $cef6d44b_server['HTTP_CF_CONNECTING_IP'];
+}
 
 /**
  * Activate plugin
@@ -641,10 +645,6 @@ function trafficjammer_abuse_threshold() {
  */
 function trafficjammer_server_var( $server ) {
 	if ( is_string( $server ) ) {
-		// get real visitors IP when domain is using Cloudflare.
-		if ( ! empty( $server['HTTP_CF_CONNECTING_IP'] ) ) {
-			$server['REMOTE_ADDR'] = $server['HTTP_CF_CONNECTING_IP'];
-		}
 		return sanitize_text_field( $server );
 	}
 }

@@ -3,11 +3,11 @@ Contributors: slick2
 
 Tags: security
 
-Requires at least: 4.7
+Requires at least: 5.2
 
-Tested up to: 6.1
+Tested up to: 6.2
 
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 
 Requires PHP: 7.4
 

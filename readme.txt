@@ -2,9 +2,9 @@
 Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: security
-Requires at least: 4.7
-Tested up to: 6.1
-Stable tag: 1.0.9
+Requires at least: 5.2
+Tested up to: 6.2
+Stable tag: 1.0.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +50,9 @@ The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.0.10 =
+* fix bug on detecting real IP when domain is using Cloudflare proxy
+
 = 1.0.9 =
 * fix bug on updating abuseipdb key and options
 * added checking of error when calling abuseipdb endpoint

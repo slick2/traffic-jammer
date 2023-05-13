@@ -1,10 +1,10 @@
 === Traffic Jammer ===
 Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
-Tags: security
-Requires at least: 4.7
-Tested up to: 6.1
-Stable tag: 1.0.9
+Tags: block, ip, pantheon, block ip, security, malicious ip, block bots
+Requires at least: 5.2
+Tested up to: 6.2
+Stable tag: 1.0.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,25 +13,28 @@ WordPress plugin that automatically blocks top IP visits which are reportedly ma
 
 == Description ==
 
-WordPress plugin to block IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
+Prevent unwanted traffic incidents that might result in site outages and billing overages.  WordPress plugin that blocks IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  
 
-- Single IP
-- Range of IP using CIDR format
-- User agents 
-- Known bad bots
+<h3>Firewall</h3>
 
-Note: Previous installations less than version 1.0.3 need to be reinstalled for the new features to show up.
+- Manually add an IP to be blocked
+- Manually add Bots/User-Agents/Scrappers to prevent site visit
+- Manually add an IP to be whitelisted on the login page
+- Automatically block malicious traffic thru analysis on an hourly basis
+- Automatically block excessive login attempts with configurable threshold
+- Automatically block excessive visits from an incremented query that would bust the CDN cache
 
-<h4>WP-CLI commands</h4>
+<h3>WP-CLI commands</h3>
 
 - wp jam block 127.0.0.10
 - wp jam unblock 127.0.0.10
 
-The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon.io</a> and no additional symlinks required.
+<h3><a href="https://pantheon.io">Pantheon.io</a></h3>
+Prevent traffic overages due to excessive visits from malicious traffic. The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon.io</a> and no additional symlinks required.
 
 <h4>Pantheon terminus command</h4>
-- terminus wp sitename.env -- jam block 127.0.0.1
-- terminus wp sitename.env -- jam unblock 127.0.0.1
+	terminus wp sitename.env -- jam block 127.0.0.1
+	terminus wp sitename.env -- jam unblock 127.0.0.1
 
 == Installation ===
 
@@ -50,6 +53,9 @@ The plugin can be used on sites hosted on <a href="https://pantheon.io">Pantheon
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.0.10 =
+* fix bug on detecting real IP when domain is using Cloudflare proxy
+
 = 1.0.9 =
 * fix bug on updating abuseipdb key and options
 * added checking of error when calling abuseipdb endpoint

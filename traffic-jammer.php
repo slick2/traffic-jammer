@@ -219,6 +219,7 @@ function trafficjammer_login_failed( $username ) {
 
 	$ip = $cef6d44b_server['REMOTE_ADDR'];
 
+	$ref = isset( $cef6d44b_server['HTTP_REFERER'] ) ? $cef6d44b_server['HTTP_REFERER'] : '';
 	$wpdb->insert(
 		$wpdb->prefix . 'trafficjammer_traffic',
 		array(
@@ -226,7 +227,7 @@ function trafficjammer_login_failed( $username ) {
 			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
 			'status'     => 'failed_login',
 			'request'    => $cef6d44b_server['REQUEST_URI'],
-			'ref'        => $cef6d44b_server['HTTP_REFERER'],
+			'ref'        => $ref,
 		)
 	);
 	$todays_date = date( 'Y-m-d', time() );

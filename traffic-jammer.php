@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.0.10
+ * Version:             1.1.1
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -554,6 +554,11 @@ function trafficjammer_log_retention_field() {
 		echo 'SELECTED';
 	}
 	echo '>3 days</option>';
+	echo '<option value="5" ';
+	if ( $interval_day == 5 ) {
+		echo 'SELECTED';
+	}
+	echo '>5 days</option>';
 	echo '<option value="7"';
 	if ( $interval_day == 7 ) {
 		echo 'SELECTED';
@@ -584,13 +589,21 @@ function trafficjammer_qs_busting_field() {
  */
 function trafficjammer_login_attempts() {
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	echo '<input type="text" name="wp_traffic_jammer_options[login_attempts]" size="3"';
 	if ( isset( $setting_options['login_attempts'] ) ) {
-		echo ' value="' . esc_attr( $setting_options['login_attempts'] ) . '"';
+		$la_selected = $setting_options['login_attempts'];
 	} else {
-		echo ' value="5" ';
+		$la_selected = 5;
 	}
-	echo '/>';
+	echo '<select name="wp_traffic_jammer_options[login_attempts]">';
+	for ( $la = 5; $la <= 10; $la++ ) {
+		echo '<option value="' . esc_attr( $la ) . '"';
+		if ( $la == $la_selected ) {
+			echo ' SELECTED ';
+		}
+		echo '>';
+		echo (int) $la . '</option>';
+	}
+	echo '</select>';
 	echo '<br>';
 	echo 'Automatically block IPs based on failed login attempts.';
 }

@@ -7,7 +7,7 @@ Requires at least: 5.2
 
 Tested up to: 6.2
 
-Stable tag: 1.0.10
+Stable tag: 1.1.1
 
 Requires PHP: 7.4
 
@@ -17,7 +17,7 @@ License URI: (https://www.gnu.org/licenses/gpl-2.0.html)
 
 ## Description
 
-The poormans WAF.  WordPress plugin to block IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
+Prevent unwanted traffic incidents that might result in site outages and billing overages.  WordPress plugin that blocks IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
 
 - Single IP
 - Range of IP using CIDR format

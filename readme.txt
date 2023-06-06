@@ -53,6 +53,9 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.1.2 =
+* fixed deprecated warnings 
+
 = 1.1.1 =
 * prevent selection or entering 0 to the login threshold that would result in lockout
 

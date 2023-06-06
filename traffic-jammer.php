@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.1.1
+ * Version:             1.1.2
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -173,12 +173,14 @@ function trafficjammer_traffic_live() {
 	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
 
 	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
-		if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
-			header( 'HTTP/1.0 403 Forbidden' );
-			exit();
+		if ( ! empty( $url['query'] ) ) {
+			if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
+				header( 'HTTP/1.0 403 Forbidden' );
+				exit();
+			}
 		}
 	}
-
+	$ref = isset( $cef6d44b_server['HTTP_REFERER'] ) ? $cef6d44b_server['HTTP_REFERER'] : '';
 	$wpdb->insert(
 		$wpdb->prefix . 'trafficjammer_traffic',
 		array(
@@ -186,7 +188,7 @@ function trafficjammer_traffic_live() {
 			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
 			'status'     => http_response_code(),
 			'request'    => $cef6d44b_server['REQUEST_URI'],
-			'ref'        => $cef6d44b_server['HTTP_REFERER'],
+			'ref'        => $ref,
 		)
 	);
 }

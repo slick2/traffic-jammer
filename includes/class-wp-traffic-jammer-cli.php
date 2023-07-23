@@ -67,6 +67,22 @@ class Traffic_Jammer_CLI {
 		trafficjammer_untrust_ip( $args[0] );
 		WP_CLI::line( $args[0] . ' removed from the allow list' );
 	}
+	/**
+	 * Display Top 10 IP visists
+	 *
+	 * @return void
+	 */
+	public function topip() {
+		global $wpdb;
+		$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, IP as ip FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' ) );
+		WP_CLI::line( ' IP' . ".\t\t\t" . str_pad( 'Visits', 26, ' ', STR_PAD_LEFT ) );
+		WP_CLI::line( str_repeat( '=', 52) );
+		foreach ( $traffic_logs as $value ) {
+			$visits = number_format( $value->num_visits, 0, ',' );
+			WP_CLI::line( ' ' . $value->ip . "\t\t" . str_pad( $visits, 26, ' ', STR_PAD_LEFT ) );
+		}
+	}
+
 
 }
 

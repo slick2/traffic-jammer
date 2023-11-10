@@ -804,4 +804,13 @@ function trafficjammer_check_ip( $ip, $ip_haystack ) {
 
 // include wp-cli file.
 require plugin_dir_path( __FILE__ ) . 'includes/class-traffic-jammer-cli.php';
+
+/**
+ * Register wp-cli command
+ */
+function trafficjammer_cli_register_commands() {
+	WP_CLI::add_command( 'jam', 'Traffic_Jammer_CLI' );
+}
+add_action( 'cli_init', 'trafficjammer_cli_register_commands' );
+
 require plugin_dir_path( __FILE__ ) . 'includes/class-traffic-jammer-abuseipdb.php';

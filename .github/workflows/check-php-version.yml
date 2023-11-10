@@ -6,9 +6,9 @@ jobs:
     name: PHP version
     runs-on: ubuntu-latest
     steps:
-      -name: Setup PHP
-       uses: shivammathur/setup-php@v2
-       with:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
           php-version: 8.2 
       - run: php -v
 

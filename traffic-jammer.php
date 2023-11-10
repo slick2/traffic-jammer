@@ -2,13 +2,13 @@
 /**
  * Traffic Jammer
  *
- * @package  TrafficJammer
+ * @package TrafficJammer
  *
- * @wordpress-plguin
+ * @wordpress-plugin
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.2.1
+ * Version:             1.2.3
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -18,11 +18,13 @@
  * Text Domain:         traffic-jammer
  */
 
-/** Sanitize server variables */
-$cef6d44b_server = array_map( 'trafficjammer_server_var', $_SERVER );
+/** 
+ * Sanitize server variables. 
+ */
+$cef6d44b_server = array_map('trafficjammer_server_var', $_SERVER);
 // real visitor IP address when using Cloudflare proxy.
-if ( ! empty( $cef6d44b_server['HTTP_CF_CONNECTING_IP'] ) ) {
-	$cef6d44b_server['REMOTE_ADDR'] = $cef6d44b_server['HTTP_CF_CONNECTING_IP'];
+if ( !empty($cef6d44b_server['HTTP_CF_CONNECTING_IP']) ) {
+    $cef6d44b_server['REMOTE_ADDR'] = $cef6d44b_server['HTTP_CF_CONNECTING_IP'];
 }
 
 /**
@@ -203,6 +205,7 @@ add_action( 'init', 'trafficjammer_traffic_live' );
  * Record failed login attempt
  *
  * @param array $username callback to show username.
+ * 
  * @return void
  */
 function trafficjammer_login_failed( $username ) {

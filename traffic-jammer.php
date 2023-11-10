@@ -61,9 +61,9 @@ function trafficjammer_activate() {
 		add_option( 'wp_traffic_jammer_user_agents', $bad_bots, '', 'no' );
 	}
 
-	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
+	$table_name               = $wpdb->prefix . 'trafficjammer_traffic';
 	$trafficjammer_db_version = '1.0.3';
-	$collate_charset = $wpdb->get_charset_collate();
+	$collate_charset          = $wpdb->get_charset_collate();
 	// Define the table for traffic logs.
 	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ register_activation_hook( __FILE__, 'trafficjammer_activate' );
  */
 function trafficjammer_deactivate() {
 	global $wpdb;
-	/** 
+	/**
 	delete_option( 'wp_traffic_jammer_options' );
 	delete_option( 'wp_traffic_jammer_blocklist' );
 	delete_option( 'wp_traffic_jammer_whitelist' );
@@ -238,7 +238,7 @@ function trafficjammer_login_failed( $username ) {
 	);
 	$todays_date = date( 'Y-m-d', time() );
 	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
-	$result = $wpdb->get_row( $wpdb->prepare( $sql ) );
+	$result      = $wpdb->get_row( $wpdb->prepare( $sql ) );
 	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
 		// We don't want duplicate values on the blocklist.
 		if ( ! trafficjammer_check_ip( $ip, $blocklist ) ) {
@@ -564,7 +564,7 @@ function trafficjammer_whitelist() {
  */
 function trafficjammer_log_retention_field() {
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
-	$interval_day = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
+	$interval_day    = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
 	echo '<select name="wp_traffic_jammer_options[log_retention]">';
 	echo '<option value="3" ';
 	if ( $interval_day == 3 ) {
@@ -687,7 +687,7 @@ function trafficjammer_server_var( $server ) {
  */
 function trafficjammer_block_ip( $ip ) {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
-	if ( ! empty( $blocklist )) {
+	if ( ! empty( $blocklist ) ) {
 		$ips = array_map( 'trim', explode( ',', $blocklist ) );
 	} else {
 		$ips = array();
@@ -729,7 +729,7 @@ function trafficjammer_unblock_ip( $ip ) {
  */
 function trafficjammer_trust_ip( $ip ) {
 	$whitelist = get_option( 'wp_traffic_jammer_whitelist' );
-	if ( ! empty( $whitelist )) {
+	if ( ! empty( $whitelist ) ) {
 		$ips = array_map( 'trim', explode( ',', $whitelist ) );
 	} else {
 		$ips = array();

@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.2.3
+ * Version:             1.2.4
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -18,13 +18,13 @@
  * Text Domain:         traffic-jammer
  */
 
-/** 
- * Sanitize server variables. 
+/**
+ * Sanitize server variables.
  */
-$cef6d44b_server = array_map('trafficjammer_server_var', $_SERVER);
+$cef6d44b_server = array_map( 'trafficjammer_server_var', $_SERVER );
 // real visitor IP address when using Cloudflare proxy.
-if ( !empty($cef6d44b_server['HTTP_CF_CONNECTING_IP']) ) {
-    $cef6d44b_server['REMOTE_ADDR'] = $cef6d44b_server['HTTP_CF_CONNECTING_IP'];
+if ( ! empty( $cef6d44b_server['HTTP_CF_CONNECTING_IP'] ) ) {
+	$cef6d44b_server['REMOTE_ADDR'] = $cef6d44b_server['HTTP_CF_CONNECTING_IP'];
 }
 
 /**
@@ -86,7 +86,6 @@ function trafficjammer_activate() {
 	if ( ! wp_next_scheduled( 'trafficjammer_cron_hook' ) ) {
 		wp_schedule_event( time(), 'hourly', 'trafficjammer_cron_hook' );
 	}
-
 }
 register_activation_hook( __FILE__, 'trafficjammer_activate' );
 
@@ -110,7 +109,6 @@ function trafficjammer_deactivate() {
 	wp_clear_scheduled_hook( 'trafficjammer_cron_hook' );
 	remove_action( 'init', 'trafficjammer_traffic_live' );
 	$wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %s', $table_name ) );
-
 }
 register_deactivation_hook( __FILE__, 'trafficjammer_deactivate' );
 
@@ -205,7 +203,7 @@ add_action( 'init', 'trafficjammer_traffic_live' );
  * Record failed login attempt
  *
  * @param array $username callback to show username.
- * 
+ *
  * @return void
  */
 function trafficjammer_login_failed( $username ) {
@@ -523,7 +521,6 @@ function trafficjammer_admin_init() {
 		'wp_traffic_jammer_abuseipdb'
 	);
 	wp_enqueue_script( 'jquery-ui-tabs' );
-
 }
 add_action( 'admin_init', 'trafficjammer_admin_init' );
 
@@ -600,7 +597,6 @@ function trafficjammer_qs_busting_field() {
 	echo '> <code>/?{timestamp}</code>';
 	echo '<br>';
 	echo 'Block execesive request, example: <code>/?1234567890</code> ';
-
 }
 /**
  * Block failed login attempts

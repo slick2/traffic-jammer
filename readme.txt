@@ -3,8 +3,8 @@ Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: block, ip, pantheon, block ip, security, malicious ip, block bots, pantheon block ip
 Requires at least: 5.2
-Tested up to: 6.3.2
-Stable tag: 1.2.3
+Tested up to: 6.4.1
+Stable tag: 1.2.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,9 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.2.4 =
+* Tested to work with version 6.4.1
+
 = 1.2.3 =
 * Tested to work WordPress version 6.3.2
 

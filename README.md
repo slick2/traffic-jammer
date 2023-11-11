@@ -1,5 +1,5 @@
 # Traffic Jammer - WordPress Plugin #
-**Contributors:** [slick2](https://profiles.wordpress.org/slick2/)
+**Contributors:** [slick2](https://profiles.wordpress.org/slick2/) 
 **Tags:** security
 **Requires at least:** 5.2
 **Tested up to:** 6.4.1
@@ -24,7 +24,7 @@ When adding an IP, use the formats listed below.
 | IPv4 |	CIDR range	 |  192.168.1.0/24                            |  
 | IPv6 |    IPv6 Address |	2001:4450:49b6:9900:6498:6f80:4b15:240a   |
 
-## Command Line
+## Command Line ##
 - Block an IP using wp-cli
 ```
 wp jam block <ip>
@@ -34,7 +34,7 @@ Unblock an IP using wp-cli
 wp jam unblock <ip>
 ```
 
-## Installation
+## Installation ##
 
 1. Download the plugin via the github release page
 1. Upload the compress archive through the 'Plugins > Add New > Upload' screen in your WordPress dashbboard

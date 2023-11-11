@@ -1,21 +1,14 @@
-# Traffic Jammer
-Contributors: slick2
+# Traffic Jammer - WordPress Plugin #
+**Contributors:** [slick2](https://profiles.wordpress.org/slick2/)
+**Tags:** security
+**Requires at least:** 5.2
+**Tested up to:** 6.4.1
+**Stable tag:** 1.2.4
+**Requires PHP:** 7.4
+**License:** GPLv2 or later
+**License URI:** (https://www.gnu.org/licenses/gpl-2.0.html)
 
-Tags: security
-
-Requires at least: 5.2
-
-Tested up to: 6.4.1
-
-Stable tag: 1.2.4
-
-Requires PHP: 7.4
-
-License: GPLv2 or later
-
-License URI: (https://www.gnu.org/licenses/gpl-2.0.html)
-
-## Description
+## Description ##
 
 Prevent unwanted traffic incidents that might result in site outages and billing overages.  WordPress plugin that blocks IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  The plugiin can block:
 

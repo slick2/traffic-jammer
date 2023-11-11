@@ -1,12 +1,12 @@
-# Traffic Jammer - WordPress Plugin #
-**Contributors:** [slick2](https://profiles.wordpress.org/slick2/) 
-**Tags:** security
-**Requires at least:** 5.2
-**Tested up to:** 6.4.1
-**Stable tag:** 1.2.4
-**Requires PHP:** 7.4
-**License:** GPLv2 or later
-**License URI:** (https://www.gnu.org/licenses/gpl-2.0.html)
+# Traffic Jammer - WordPress Plugin #  
+**Contributors:** [slick2](https://profiles.wordpress.org/slick2/)  
+**Tags:** security  
+**Requires at least:** 5.2  
+**Tested up to:** 6.4.1  
+**Stable tag:** 1.2.4  
+**Requires PHP:** 7.4  
+**License:** GPLv2 or later  
+**License URI:** (https://www.gnu.org/licenses/gpl-2.0.html)  
 
 ## Description ##
 

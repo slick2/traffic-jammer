@@ -1,8 +1,15 @@
 <?php
 /**
- * Class Trafficjammer_AbuseIPDB
+ * Class to communicate with AbuseIPDB website
  *
- * @package TrafficJammer
+ * @package   traffic-jammer
+ * @author    Carey Dayrit <carey.dayrit@gmail.com>
+ * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link     https://wordpress.org/plugins/traffic-jammer
+ */
+
+/**
+ * TrafficJammer_ABuseIPDB
  */
 class Traffic_Jammer_AbuseIPDB {
 
@@ -61,6 +68,9 @@ class Traffic_Jammer_AbuseIPDB {
 	 * @return bool would return true or false.
 	 */
 	public static function verify_key( $key ) {
+		if ( empty( $key ) ) {
+			$key = $this->api;
+		}
 		$response = wp_remote_request(
 			$this->base_url . 'blacklist?limit=' . 1,
 			array(
@@ -83,6 +93,4 @@ class Traffic_Jammer_AbuseIPDB {
 
 		return false;
 	}
-
 }
-

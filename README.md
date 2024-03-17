@@ -1,7 +1,3 @@
-# Traffic Jammer
-
-## Description
-=======
 # Traffic Jammer - WordPress Plugin #  
 **Contributors:** [slick2](https://profiles.wordpress.org/slick2/)  
 **Tags:** security  

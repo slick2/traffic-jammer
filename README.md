@@ -5,9 +5,9 @@ Tags: security
 
 Requires at least: 5.2
 
-Tested up to: 6.4.1
+Tested up to: 6.4.3
 
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 
 Requires PHP: 7.4
 

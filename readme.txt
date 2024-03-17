@@ -1,15 +1,15 @@
 === Traffic Jammer ===
 Contributors: slick2
 Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
-Tags: block, ip, pantheon, block ip, security, malicious ip, block bots, pantheon block ip
+Tags: pantheon, security, block ip, bots, login
 Requires at least: 5.2
 Tested up to: 6.4.3
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress plugin that automatically blocks top IP visits which are reportedly malicious.  Protects the login area by limiting access and blocking failed login attempts.  It prevents spamming bots that cause traffic overages.
+WordPress plugin that automatically blocks top IP visits which are reportedly malicious.  Protects the login area by limiting access and blocking failed login attempts.
 
 == Description ==
 
@@ -54,6 +54,9 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.2.6 =
+* readme and tags formatting
+
 = 1.2.5 =
 * Tested to work with version 6.4.3
 

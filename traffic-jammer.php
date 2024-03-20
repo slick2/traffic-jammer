@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.2.6
+ * Version:             1.3.0
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -96,12 +96,6 @@ register_activation_hook( __FILE__, 'trafficjammer_activate' );
  */
 function trafficjammer_deactivate() {
 	global $wpdb;
-	/**
-	delete_option( 'wp_traffic_jammer_options' );
-	delete_option( 'wp_traffic_jammer_blocklist' );
-	delete_option( 'wp_traffic_jammer_whitelist' );
-	delete_option( 'wp_traffic_jammer_user_agents' );
-	*/
 	// table name.
 	$table_name = $wpdb->prefix . 'trafficjammer_traffic';
 	// cleanup.
@@ -138,16 +132,16 @@ function trafficjammer_cron_exec() {
 		$abuse = new Traffic_Jammer_AbuseIPDB();
 
 		// Check the top ip, add IP to blocklist with threshold confidence of abuse.
-		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' );
+		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' ); //phpcs:ignore
 
 		foreach ( $traffic_logs as $value ) {
 			// skip if it is in the blocklist.
-			if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) {
+			if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) { //phpcs:ignore
 				continue;
 			} else {
-				$abuse_result = $abuse->check( $value->IP );
+				$abuse_result = $abuse->check( $value->IP ); //phpcs:ignore
 				if ( (int) $abuse_result['data']['abuseConfidenceScore'] >= $threshold ) {
-					trafficjammer_block_ip( $value->IP );
+					trafficjammer_block_ip( $value->IP ); //phpcs:ignore
 				}
 			}
 		}
@@ -155,7 +149,7 @@ function trafficjammer_cron_exec() {
 
 	// Cleanup Logs.
 	$interval_day = isset( $settting_options['log_retention'] ) ? $settting_options['log_retention'] : 3;
-	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' );
+	$wpdb->query( 'DELETE FROM ' . $table_name . ' WHERE `date` < DATE_SUB( NOW(), INTERVAL ' . $interval_day . ' DAY );' ); //phpcs:ignore
 }
 add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 
@@ -169,7 +163,7 @@ add_action( 'trafficjammer_cron_hook', 'trafficjammer_cron_exec' );
 function trafficjammer_traffic_live() {
 	global $wpdb, $cef6d44b_server;
 	// skip when running thru cli.
-	if ( php_sapi_name() == 'cli' ) {
+	if ( php_sapi_name() == 'cli' ) { //phpcs:ignore
 		return;
 	}
 
@@ -177,7 +171,7 @@ function trafficjammer_traffic_live() {
 
 	$url = wp_parse_url( $cef6d44b_server['REQUEST_URI'] );
 
-	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) {
+	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] === 'yes' ) { //phpcs:ignore
 		if ( ! empty( $url['query'] ) ) {
 			if ( '/' === $url['path'] && preg_match( '/^([0-9]{10})$/', $url['query'] ) ) {
 				header( 'HTTP/1.0 403 Forbidden' );
@@ -186,7 +180,7 @@ function trafficjammer_traffic_live() {
 		}
 	}
 	$ref = isset( $cef6d44b_server['HTTP_REFERER'] ) ? $cef6d44b_server['HTTP_REFERER'] : '';
-	$wpdb->insert(
+	$wpdb->insert( //phpcs:ignore
 		$wpdb->prefix . 'trafficjammer_traffic',
 		array(
 			'IP'         => $cef6d44b_server['REMOTE_ADDR'],
@@ -219,26 +213,26 @@ function trafficjammer_login_failed( $username ) {
 		$num_tries = 5;
 	}
 
-	if ( $num_tries == 0 ) {
+	if ( $num_tries == 0 ) { //phpcs:ignore
 		return;
 	}
 
 	$ip = $cef6d44b_server['REMOTE_ADDR'];
 
 	$ref = isset( $cef6d44b_server['HTTP_REFERER'] ) ? $cef6d44b_server['HTTP_REFERER'] : '';
-	$wpdb->insert(
+	$wpdb->insert( //phpcs:ignore
 		$wpdb->prefix . 'trafficjammer_traffic',
 		array(
 			'IP'         => $ip,
 			'user_agent' => $cef6d44b_server['HTTP_USER_AGENT'],
-			'status'     => 'failed_login',
+			'status'     => 'failed_login :' . $username,
 			'request'    => $cef6d44b_server['REQUEST_URI'],
 			'ref'        => $ref,
 		)
 	);
-	$todays_date = date( 'Y-m-d', time() );
+	$todays_date = date( 'Y-m-d', time() ); //phpcs:ignore
 	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
-	$result      = $wpdb->get_row( $wpdb->prepare( $sql ) );
+	$result      = $wpdb->get_row( $wpdb->prepare( $sql ) ); //phpcs:ignore
 	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
 		// We don't want duplicate values on the blocklist.
 		if ( ! trafficjammer_check_ip( $ip, $blocklist ) ) {
@@ -258,7 +252,7 @@ function trafficjammer_limit_ip() {
 	$blocklist = get_option( 'wp_traffic_jammer_blocklist' );
 
 	// skip when running thru cli.
-	if ( php_sapi_name() == 'cli' ) {
+	if ( php_sapi_name() === 'cli' ) {
 		return;
 	}
 
@@ -317,7 +311,7 @@ function trafficjammer_limit_user_agents() {
 		return;
 	}
 
-	if ( php_sapi_name() == 'cli' ) {
+	if ( php_sapi_name() === 'cli' ) {
 		return;
 	}
 
@@ -567,17 +561,17 @@ function trafficjammer_log_retention_field() {
 	$interval_day    = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
 	echo '<select name="wp_traffic_jammer_options[log_retention]">';
 	echo '<option value="3" ';
-	if ( $interval_day == 3 ) {
+	if ( $interval_day == 3 ) { //phpcs:ignore
 		echo 'SELECTED';
 	}
 	echo '>3 days</option>';
 	echo '<option value="5" ';
-	if ( $interval_day == 5 ) {
+	if ( $interval_day == 5 ) { //phpcs:ignore
 		echo 'SELECTED';
 	}
 	echo '>5 days</option>';
 	echo '<option value="7"';
-	if ( $interval_day == 7 ) {
+	if ( $interval_day == 7 ) { //phpcs:ignore
 		echo 'SELECTED';
 	}
 	echo '>7 days</option>';
@@ -591,7 +585,7 @@ function trafficjammer_log_retention_field() {
 function trafficjammer_qs_busting_field() {
 	$setting_options = get_option( 'wp_traffic_jammer_options' );
 	echo '<input type="checkbox" value="yes" name="wp_traffic_jammer_options[qs_stamp]"';
-	if ( isset( $setting_options['qs_stamp'] ) && $setting_options['qs_stamp'] == 'yes' ) {
+	if ( isset( $setting_options['qs_stamp'] ) && 'yes' === $setting_options['qs_stamp'] ) {
 		echo 'checked';
 	}
 	echo '> <code>/?{timestamp}</code>';
@@ -613,7 +607,7 @@ function trafficjammer_login_attempts() {
 	echo '<select name="wp_traffic_jammer_options[login_attempts]">';
 	for ( $la = 5; $la <= 10; $la++ ) {
 		echo '<option value="' . esc_attr( $la ) . '"';
-		if ( $la == $la_selected ) {
+		if ( $la === $la_selected ) {
 			echo ' SELECTED ';
 		}
 		echo '>';
@@ -654,7 +648,7 @@ function trafficjammer_abuse_threshold() {
 	echo '<select name="wp_traffic_jammer_abuseipdb[abuseipdb_threshold]">';
 	for ( $i = 70; $i <= 100; $i = $i + 10 ) {
 		echo '<option value="' . esc_html( $i ) . '"';
-		if ( $threshold == $i ) {
+		if ( $threshold === $i ) {
 			echo ' selected ';
 		}
 		echo '>' . esc_html( $i ) . '</option>';
@@ -714,7 +708,7 @@ function trafficjammer_unblock_ip( $ip ) {
 	// convert to array.
 	$ips = array_map( 'trim', explode( ',', $blocklist ) );
 	$len = count( $ips );
-	$idx = array_search( $ip, $ips );
+	$idx = array_search( $ip, $ips, true );
 	array_splice( $ips, $idx, 1 );
 	$blocklist = implode( ",\n", $ips );
 	update_option( 'wp_traffic_jammer_blocklist', $blocklist );
@@ -756,7 +750,7 @@ function trafficjammer_untrust_ip( $ip ) {
 	// convert to array.
 	$ips = array_map( 'trim', explode( ',', $whitelist ) );
 	$len = count( $ips );
-	$idx = array_search( $ip, $ips );
+	$idx = array_search( $ip, $ips, true );
 	array_splice( $ips, $idx, 1 );
 	$whitelist = implode( ",\n", $ips );
 	update_option( 'wp_traffic_jammer_whitelist', $whitelist );

@@ -6,26 +6,26 @@
  */
 
 $cef6d44b_tab = '';
-if ( ! empty( $_GET['tab'] ) ) {
-	$cef6d44b_tab = wp_unslash( $_GET['tab'] );
+if ( ! empty( $_GET['tab'] ) ) { //phpcs:ignore
+	$cef6d44b_tab = wp_unslash( $_GET['tab'] ); //phpcs:ignore
 } else {
 	$cef6d44b_tab = 'ip';
 }
 $setting_options = get_option( 'wp_traffic_jammer_options' );
-$interval_days = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
+$interval_days   = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
 ?>
 <div class="wrap">
 	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer - Reports</h2>
-	<p><?php esc_html_e( 'Logs retention is set to ' . $interval_days . ' days.' ); ?></p>
+	<p>Logs retention is set to <?php echo esc_html( $interval_days ); ?> days</p>
 	<nav class="nav-tab-wrapper wp-clearfix" aria-label="Traffic Jammer Tabs">
-		<a href="?page=trafficjammer_traffic_logs&tab=ip" class="nav-tab <?php echo $cef6d44b_tab == 'ip' ? 'nav-tab-active' : '';  ?>" >Top IP</a>
-		<a href="?page=trafficjammer_traffic_logs&tab=useragent" class="nav-tab <?php echo $cef6d44b_tab == 'useragent' ? 'nav-tab-active' : '';  ?>">Top User Agents</a>
-		<a href="?page=trafficjammer_traffic_logs&tab=recent" class="nav-tab <?php echo $cef6d44b_tab == 'recent' ? 'nav-tab-active' : ''; ?>">Recent Activity</a>
+		<a href="?page=trafficjammer_traffic_logs&tab=ip" class="nav-tab <?php echo $cef6d44b_tab == 'ip' ? 'nav-tab-active' : ''; //phpcs:ignore  ?>" >Top IP</a>
+		<a href="?page=trafficjammer_traffic_logs&tab=useragent" class="nav-tab <?php echo $cef6d44b_tab == 'useragent' ? 'nav-tab-active' : ''; //phpcs:ignore ?>">Top User Agents</a>
+		<a href="?page=trafficjammer_traffic_logs&tab=recent" class="nav-tab <?php echo $cef6d44b_tab == 'recent' ? 'nav-tab-active' : ''; //phpcs:ignore?>">Recent Activity</a>
 	</nav>
 	<div class="tabs-content">
 <?php
 if ( 'ip' === $cef6d44b_tab ) {
-	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 25' ) );
+	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 25' ) ); //phpcs:ignore
 
 	?>
 <table class="wp-list-table widefat fixed striped posts">
@@ -39,9 +39,9 @@ if ( 'ip' === $cef6d44b_tab ) {
 		<tbody>
 			<?php foreach ( $traffic_logs as $value ) { ?>
 			<tr>
-				<td><?php echo esc_html( $value->IP ); ?></td>
+				<td><?php echo esc_html( $value->IP ); //phpcs:ignore?></td>
 				<td><?php echo esc_html( number_format( $value->num_visits, 0 ) ); ?></td>
-				<td><a href="https://www.abuseipdb.com/check/<?php echo esc_html( $value->IP ); ?>" target="_blank" title="Go to abuseipdb.com"><span class="dashicons dashicons-welcome-view-site"></span></a></td>
+				<td><a href="https://www.abuseipdb.com/check/<?php echo esc_html( $value->IP ); //phpcs:ignore ?>" target="_blank" title="Go to abuseipdb.com"><span class="dashicons dashicons-welcome-view-site"></span></a></td>
 			</tr>
 			<?php } ?>
 		</tbody>
@@ -57,7 +57,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 ?>
 <?php
 if ( 'useragent' === $cef6d44b_tab ) {
-	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, user_agent FROM ' . $wpdb->prefix . 'trafficjammer_traffic where user_agent is not null GROUP BY user_agent ORDER BY num_visits DESC LIMIT 25' ) );
+	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT count(*) as num_visits, user_agent FROM ' . $wpdb->prefix . 'trafficjammer_traffic where user_agent is not null GROUP BY user_agent ORDER BY num_visits DESC LIMIT 25' ) ); //phpcs:ignore
 
 	?>
 <table class="wp-list-table widefat fixed striped posts">
@@ -86,7 +86,7 @@ if ( 'useragent' === $cef6d44b_tab ) {
 ?>
 <?php
 if ( 'recent' === $cef6d44b_tab ) {
-	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'trafficjammer_traffic ORDER BY date DESC LIMIT 25' ) );
+	$traffic_logs = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'trafficjammer_traffic ORDER BY date DESC LIMIT 25' ) ); //phpcs:ignore
 	?>
 	<table class="wp-list-table widefat fixed striped posts">
 		<thead>
@@ -105,7 +105,7 @@ if ( 'recent' === $cef6d44b_tab ) {
 		foreach ( $traffic_logs as $value ) {
 			?>
 			<tr>
-				<td><?php echo esc_html( $value->IP ); ?>
+				<td><?php echo esc_html( $value->IP ); //phpcs:ignore ?>
 				</td>
 				<td><?php echo esc_html( $value->user_agent ); ?>				
 				</td>

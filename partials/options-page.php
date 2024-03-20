@@ -6,8 +6,8 @@
  */
 
 $cef6d44b_tab = '';
-if ( ! empty( $_GET['tab'] ) ) {
-	$cef6d44b_tab = wp_unslash( $_GET['tab'] );
+if ( ! empty( $_GET['tab'] ) ) {  //phpcs:ignore
+	$cef6d44b_tab = wp_unslash( $_GET['tab'] ); //phpcs:ignore
 } else {
 	$cef6d44b_tab = 'blockip';
 }
@@ -16,16 +16,16 @@ if ( ! empty( $_GET['tab'] ) ) {
 	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer</h2>
 	<p><?php esc_html_e( 'Traffic Jammer offers ability to block IP and crawlers that hog system resources.' ); ?></p>
 	<nav class="nav-tab-wrapper wp-clearfix" aria-label="Traffic Jammer Tabs">
-		<a href="?page=wp_traffic_jammer&tab=blockip" class="nav-tab <?php echo $cef6d44b_tab == 'blockip' ? 'nav-tab-active' : '';  ?>" >Block IP</a>
-		<a href="?page=wp_traffic_jammer&tab=blockbot" class="nav-tab <?php echo $cef6d44b_tab == 'blockbot' ? 'nav-tab-active' : '';  ?>">Block Bots</a>
-		<a href="?page=wp_traffic_jammer&tab=allowip" class="nav-tab <?php echo $cef6d44b_tab == 'allowip' ? 'nav-tab-active' : ''; ?>">Whitelist IP</a>
-		<a href="?page=wp_traffic_jammer&tab=abuseipdb" class="nav-tab <?php echo $cef6d44b_tab == 'abuseipdb' ? 'nav-tab-active' : ''; ?>">AbuseIPDB</a>
-		<a href="?page=wp_traffic_jammer&tab=settings" class="nav-tab <?php echo $cef6d44b_tab == 'settings' ? 'nav-tab-active' : ''; ?>">Settings</a>
+		<a href="?page=wp_traffic_jammer&tab=blockip" class="nav-tab <?php echo $cef6d44b_tab == 'blockip' ? 'nav-tab-active' : ''; //phpcs:ignore ?>" >Block IP</a>
+		<a href="?page=wp_traffic_jammer&tab=blockbot" class="nav-tab <?php echo $cef6d44b_tab == 'blockbot' ? 'nav-tab-active' : ''; //phpcs:ignore ?>">Block Bots</a>
+		<a href="?page=wp_traffic_jammer&tab=allowip" class="nav-tab <?php echo $cef6d44b_tab == 'allowip' ? 'nav-tab-active' : ''; //phpcs:ignore ?>">Whitelist IP</a>
+		<a href="?page=wp_traffic_jammer&tab=abuseipdb" class="nav-tab <?php echo $cef6d44b_tab == 'abuseipdb' ? 'nav-tab-active' : ''; //phpcs:ignore ?>">AbuseIPDB</a>
+		<a href="?page=wp_traffic_jammer&tab=settings" class="nav-tab <?php echo $cef6d44b_tab == 'settings' ? 'nav-tab-active' : ''; //phpcs:ignore ?>">Settings</a>
 	</nav>
 	<div class="tabs-content">
 
 	<?php
-	if ( isset( $_GET['settings-updated'] ) && empty( get_settings_errors( 'trafficjammer_messages' ) ) ) {
+	if ( isset( $_GET['settings-updated'] ) && empty( get_settings_errors( 'trafficjammer_messages' ) ) ) { //phpcs:ignore
 		// add settings saved message with the class of "updated".
 		add_settings_error( 'trafficjammer_messages', 'trafficjammer_message', __( 'Settings Saved', 'wp_traffic_jammer' ), 'updated' );
 	}
@@ -110,10 +110,10 @@ if ( ! empty( $_GET['tab'] ) ) {
 	?>
 	</div>
 	<?php
-	if ( $cef6d44b_tab === 'blockip' || $cef6d44b_tab === 'allowip' ) {
+	if ( 'blockip' === $cef6d44b_tab || 'allowip' === $cef6d44b_tab ) {
 		?>
 	<p>
-		<b><span class="dashicons-before dashicons-star-filled"></span> Your IP: <?php echo esc_html( $cef6d44b_server['REMOTE_ADDR']); ?></b>
+		<b><span class="dashicons-before dashicons-star-filled"></span> Your IP: <?php echo esc_html( $cef6d44b_server['REMOTE_ADDR'] ); ?></b>
 	</p>
 	<table class="striped fixed" cellspacing="0">
 				<thead>

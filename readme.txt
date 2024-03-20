@@ -54,6 +54,9 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
+= 1.3.0 =
+* cleanup code 
+
 = 1.2.6 =
 * readme and tags formatting
 
@@ -121,44 +124,3 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 = 1.0.0 =
 * 2022-10-07
 * Stable release approved by WordPress.org
-
-= 0.9 =
-* 2022-09-29 
-* replace icon on the menu using dashicons
-
-= 0.8 =
-* 2022-09-28
-* renamed the plugin name to comply with WordPress.org 
-
-= 0.7 =
-* 2022-09-27
-* all options used are not set to autoload
-* added a feature to whitelist an IP in wp-login.php
-
-
-= 0.6 =
-* 2022-09-26
-* activation hook, load known bad bots
-* bug fix blocking of user agents
-* refactor code on checking of IP
-
-= 0.5 =
-* 2022-09-19
-* add jam wp-cli command
-* add block IP using wp-cli
-* unblock IP using wp-cli
-
-
-= 0.4 =
-* 2022-09-06
-* fix PHP warning when DEBUG is set to true
-* added ip range blocking using cidr
-
-= 0.3 =
-* 2022-09-05 
-* added feature to block user agent
-* adhere to WordPress coding standards
-
-= 0.2 =
-* 2022-08-13 
-* Initial release 

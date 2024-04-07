@@ -8,8 +8,7 @@ Stable tag: 1.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-
-WordPress plugin that automatically blocks top IP visits which are reportedly malicious.  Protects the login area by limiting access and blocking failed login attempts.
+Safeguard your site from malicious activity and unwanted visitors by effortlessly managing IP blocks through the dashboard or command line ingerface.
 
 == Description ==
 

@@ -2,7 +2,7 @@
 **Contributors:** [slick2](https://profiles.wordpress.org/slick2/)  
 **Tags:** security  
 **Requires at least:** 5.2  
-**Tested up to:** 6.5.3 
+**Tested up to:** 6.5.3  
 **Stable tag:** 1.4.0  
 **Requires PHP:** 7.4  
 **License:** GPLv2 or later  

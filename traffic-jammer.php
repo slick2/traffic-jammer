@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.4.1
+ * Version:             1.4.2
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -607,7 +607,7 @@ function trafficjammer_login_attempts() {
 	echo '<select name="wp_traffic_jammer_options[login_attempts]">';
 	for ( $la = 5; $la <= 10; $la++ ) {
 		echo '<option value="' . esc_attr( $la ) . '"';
-		if ( $la === $la_selected ) {
+		if ( $la == $la_selected ) {
 			echo ' SELECTED ';
 		}
 		echo '>';

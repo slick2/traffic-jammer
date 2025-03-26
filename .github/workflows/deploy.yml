@@ -9,6 +9,8 @@ jobs:
     release:
       runs-on: ubuntu-latest
       steps:
+      - name: Update packages
+        run: sudo apt-get update
       - name: Install svn
         run:  sudo apt-get install subversion
       - uses: actions/checkout@v4.2.2

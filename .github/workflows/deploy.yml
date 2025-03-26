@@ -11,7 +11,7 @@ jobs:
       steps:
       - name: Install svn
         run:  sudo apt-get install subversion
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=8M46X2F79WATW
 Tags: pantheon, security, block ip, bots, login
 Requires at least: 5.2
 Tested up to: 6.7.2
-Stable tag: 1.4.3  
+Stable tag: 1.4.4 
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,10 +53,14 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
-= 1.4.3 
+= 1.4.4 =
+ * option to disable limit failed login
+ * show abuse score on the reports if Abusedb API is present
+
+= 1.4.3 =
  * version bump, tested for WordPress version 6.7.2
  
-= 1.4.0
+= 1.4.0 =
 * added threshold 50 and 60 options
 * tested working with 6.5.3
 

@@ -8,7 +8,7 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.4.3
+ * Version:             1.4.4
  * Requires at least:   5.2
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -132,7 +132,7 @@ function trafficjammer_cron_exec() {
 		$abuse = new Traffic_Jammer_AbuseIPDB();
 
 		// Check the top ip, add IP to blocklist with threshold confidence of abuse.
-		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 10' ); //phpcs:ignore
+		$traffic_logs = $wpdb->get_results( 'SELECT count(*) as num_visits, IP FROM ' . $wpdb->prefix . 'trafficjammer_traffic where IP is not null GROUP BY IP ORDER BY num_visits DESC LIMIT 25' ); //phpcs:ignore
 
 		foreach ( $traffic_logs as $value ) {
 			// skip if it is in the blocklist.
@@ -213,7 +213,7 @@ function trafficjammer_login_failed( $username ) {
 		$num_tries = 5;
 	}
 
-	if ( $num_tries == 0 ) { //phpcs:ignore
+	if ( $num_tries == 0 || $num_tries === "disable" ) { //phpcs:ignore
 		return;
 	}
 
@@ -231,7 +231,7 @@ function trafficjammer_login_failed( $username ) {
 		)
 	);
 	$todays_date = date( 'Y-m-d', time() ); //phpcs:ignore
-	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status="failed_login" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
+	$sql         = 'SELECT count(*) as ctr, IP FROM  ' . $wpdb->prefix . 'trafficjammer_traffic WHERE status like "failed_login %" and IP="' . $ip . '" and date >="' . $todays_date . '" group by IP LIMIT 1';
 	$result      = $wpdb->get_row( $wpdb->prepare( $sql ) ); //phpcs:ignore
 	if ( ( ! empty( $result->ctr ) ) && $result->ctr > $num_tries ) {
 		// We don't want duplicate values on the blocklist.
@@ -605,6 +605,7 @@ function trafficjammer_login_attempts() {
 		$la_selected = 5;
 	}
 	echo '<select name="wp_traffic_jammer_options[login_attempts]">';
+	echo '<option value="disable">-- disable --</option>';
 	for ( $la = 5; $la <= 10; $la++ ) {
 		echo '<option value="' . esc_attr( $la ) . '"';
 		if ( $la == $la_selected ) {

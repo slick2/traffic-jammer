@@ -51,7 +51,8 @@ if ( 'ip' === $cef6d44b_tab ) {
 				<?php if ( isset( $abuseipdb['abuseipdb_key'] ) ) { ?>
 						<td>
 						<?php
-						if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) { //phpcs:ignore
+						if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) { //phpcs:ignore	
+							$abuse_result = $abuse->check( $value->IP ); //phpcs:ignore						
 							echo esc_html( (int) $abuse_result['data']['abuseConfidenceScore'] );
 							echo esc_html( '%' );
 							echo esc_html( 'blocked' );

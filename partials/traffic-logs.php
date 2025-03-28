@@ -55,7 +55,7 @@ if ( 'ip' === $cef6d44b_tab ) {
 							$abuse_result = $abuse->check( $value->IP ); //phpcs:ignore						
 							echo esc_html( (int) $abuse_result['data']['abuseConfidenceScore'] );
 							echo esc_html( '%' );
-							echo esc_html( 'blocked' );
+							echo esc_html( ' (blocked) ' );
 						} else {
 							$abuse_result = $abuse->check( $value->IP ); //phpcs:ignore
 							echo esc_html( (int) $abuse_result['data']['abuseConfidenceScore'] );

@@ -12,7 +12,11 @@ if ( ! empty( $_GET['tab'] ) ) { //phpcs:ignore
 	$cef6d44b_tab = 'ip';
 }
 $setting_options = get_option( 'wp_traffic_jammer_options' );
+$blocklist       = get_option( 'wp_traffic_jammer_blocklist' );
+$blocklist       = array_map( 'trim', explode( ',', $blocklist ) );
 $interval_days   = isset( $setting_options['log_retention'] ) ? $setting_options['log_retention'] : 3;
+$abuseipdb       = get_option( 'wp_traffic_jammer_abuseipdb' );
+$abuse           = new Traffic_Jammer_AbuseIPDB();
 ?>
 <div class="wrap">
 	<h2 class="dashicons-before dashicons-privacy">Traffic Jammer - Reports</h2>
@@ -33,6 +37,9 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<th scope="col">IP</th>
 				<th scope="col">Count</th>
+	<?php if ( isset( $abuseipdb['abuseipdb_key'] ) ) { ?>
+				<th scope="col">Abuse Score</th>
+	<?php } ?>
 				<th scope="col">Check</th>
 			</tr>
 		</thead>
@@ -41,6 +48,21 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<td><?php echo esc_html( $value->IP ); //phpcs:ignore?></td>
 				<td><?php echo esc_html( number_format( $value->num_visits, 0 ) ); ?></td>
+				<?php if ( isset( $abuseipdb['abuseipdb_key'] ) ) { ?>
+						<td>
+						<?php
+						if ( trafficjammer_check_ip( $value->IP, $blocklist ) ) { //phpcs:ignore
+							echo esc_html( (int) $abuse_result['data']['abuseConfidenceScore'] );
+							echo esc_html( '%' );
+							echo esc_html( 'blocked' );
+						} else {
+							$abuse_result = $abuse->check( $value->IP ); //phpcs:ignore
+							echo esc_html( (int) $abuse_result['data']['abuseConfidenceScore'] );
+							echo esc_html( '%' );
+						}
+						?>
+						</td>
+				<?php } ?>
 				<td><a href="https://www.abuseipdb.com/check/<?php echo esc_html( $value->IP ); //phpcs:ignore ?>" target="_blank" title="Go to abuseipdb.com"><span class="dashicons dashicons-welcome-view-site"></span></a></td>
 			</tr>
 			<?php } ?>
@@ -49,6 +71,9 @@ if ( 'ip' === $cef6d44b_tab ) {
 			<tr>
 				<th scope="col">IP</th>
 				<th scope="col">Count</th>
+				<?php if ( isset( $abuseipdb['abuseipdb_key'] ) ) { ?>
+				<th scope="col">Abuse Score</th>
+				<?php } ?>
 				<th scope="col">Check</th>
 			</tr>
 		</tfoot>

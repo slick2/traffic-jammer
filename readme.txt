@@ -14,6 +14,11 @@ Safeguard your site from malicious activity and unwanted visitors by effortlessl
 
 Prevent unwanted traffic incidents that might result in site outages and billing overages.  WordPress plugin that blocks IP and bots categorized as harmful, resulting in heavy server loads from frequently crawled pages, or utilized in vulnerability/security breach scans.  
 
+<h3>Usage instructions for Integrating AbuseIPDb</h3>
+1. Obtain your free API key from AbuseIPDB (<a href="https://www.abuseipdb.com"></a>).
+1. Install and activate the plugin via your WordPress dashboard.
+1. Configure the plugin settings by adding your API key and setting threat thresholds.
+
 <h3>Firewall</h3>
 
 - Manually add an IP to be blocked
@@ -53,7 +58,7 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
-= 1.4.6 =
+= 1.4.7 =
  * fix bug on the report
 
 = 1.4.4 =

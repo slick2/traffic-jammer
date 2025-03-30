@@ -58,6 +58,13 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 7. Reports - Top User Agents
 
 == Changelog ==
+
+= 1.4.9 =
+ * disallow network activation on a multisite
+
+= 1.4.8 =
+ * fix php error during plugin deactivation
+
 = 1.4.7 =
  * fix bug on the report
 

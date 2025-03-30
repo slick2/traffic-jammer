@@ -8,7 +8,8 @@
  * Plugin Name:        Traffic Jammer
  * Plugin URI:          https://wordpress.org/plugins/traffic-jammer/
  * Description:         WordPress plugin to block IP and bots that causes malicious traffic.
- * Version:             1.4.8
+ * Network:             false
+ * Version:             1.4.9
  * Requires at least:   5.6
  * Requires PHP:        7.4
  * Author:              Carey Dayrit
@@ -30,9 +31,14 @@ if ( ! empty( $cef6d44b_server['HTTP_CF_CONNECTING_IP'] ) ) {
 /**
  * Activate plugin
  *
+ * @param string $network_wide callback value.
  * @return void
  */
-function trafficjammer_activate() {
+function trafficjammer_activate( $network_wide ) {
+	if ( is_multisite() && $network_wide ) {
+		wp_die( 'Plugin cannot be activated network wide, try activating the plugin on individual sites.' );
+	}
+
 	global $wpdb;
 	// define the bad bots.
 	$bad_bots  = 'DotBot, Applebot, applebot, GnowitNewsbot, InfoTigerBot, digitalshadowsbot, SeznamBo, YandexBot, badbot';
@@ -87,6 +93,7 @@ function trafficjammer_activate() {
 		wp_schedule_event( time(), 'hourly', 'trafficjammer_cron_hook' );
 	}
 }
+
 register_activation_hook( __FILE__, 'trafficjammer_activate' );
 
 /**

@@ -16,8 +16,8 @@ jobs:
                 paths: '.' # Paths to check, space separated
                 excludes: '' # Paths to excludes, space separated
                 standard: 'WordPress' # Standard to use. Accepts WordPress|WordPress-Core|WordPress-Docs|WordPress-Extra|WordPress-VIP-Go|WordPressVIPMinimum|10up-Default.
-                standard_repo: '' # Public (git) repository URL of the coding standard
-                repo_branch: 'master' # Branch of Standard repository
+                standard_repo: 'https://github.com/WordPress/WordPress-Coding-Standards' # Public (git) repository URL of the coding standard
+                repo_branch: 'main' # Branch of Standard repository
                 phpcs_bin_path: 'phpcs' # Custom PHPCS bin path
                 use_local_config: 'false' # Use local config if available
                 extra_args: '' # Extra arguments passing to the command

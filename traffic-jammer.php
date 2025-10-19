@@ -275,7 +275,7 @@ function trafficjammer_limit_ip() {
 
 	if ( $ip_forbidden ) {
 		header( 'HTTP/1.0 403 Forbidden' );
-		exit;
+		exit();
 	}
 }
 add_action( 'init', 'trafficjammer_limit_ip' );
@@ -300,7 +300,7 @@ function trafficjammer_whitelist_ip() {
 	if ( preg_match( '/(wp-login.php)/', $cef6d44b_server['REQUEST_URI'] ) ) {
 		if ( ! $ip_allow ) {
 			header( 'HTTP/1.0 403 Forbidden' );
-			exit;
+			exit();
 		}
 	}
 }

@@ -60,6 +60,7 @@ Prevent traffic overages due to excessive visits from malicious traffic. The plu
 == Changelog ==
 = 1.4.91= 
  * tested working on 6.8.3
+ * fix php errors 
 
 = 1.4.9 =
  * disallow network activation on a multisite
